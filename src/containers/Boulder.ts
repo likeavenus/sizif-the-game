@@ -10,7 +10,7 @@ export default class Boulder extends Phaser.Physics.Matter.Image {
     this.setScale(0.102);
     this.setCircle(60, {});
     this.setBounce(0.2);
-    this.setFriction(0.4);
+    this.setFriction(0.005);
 
     this.scene.add.existing(this);
   }

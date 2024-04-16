@@ -34,6 +34,9 @@ class Game extends Phaser.Scene {
   create() {
     this.boulder = new Boulder(this, 100, 100, "boulder", undefined);
 
+    const text = this.add.text(100, 20, "Sizif", { fontSize: 18 });
+    this.matter.add.gameObject(text);
+
     this.input.on("pointerdown", (pointer) => {});
 
     // const eKey = this.input.keyboard?.addKey("E");
