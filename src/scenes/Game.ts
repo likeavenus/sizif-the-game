@@ -10,7 +10,10 @@ class Game extends Phaser.Scene {
   isTouchingGround = false;
   level: number = 1;
   emitter = new Phaser.Events.EventEmitter();
-  music!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  music!:
+    | Phaser.Sound.NoAudioSound
+    | Phaser.Sound.HTML5AudioSound
+    | Phaser.Sound.WebAudioSound;
 
   private backgrounds: {
     ratioX: number;
@@ -34,7 +37,7 @@ class Game extends Phaser.Scene {
   create() {
     this.boulder = new Boulder(this, 100, 100, "boulder", undefined);
 
-    const text = this.add.text(100, 20, "Sizif", { fontSize: 18 });
+    const text = this.add.text(200, 20, "Sizif", { fontSize: 18 });
     this.matter.add.gameObject(text);
 
     this.input.on("pointerdown", (pointer) => {});
@@ -50,7 +53,9 @@ class Game extends Phaser.Scene {
     this.cameras.main.setFollowOffset(-30, 80);
   }
 
-  update(time: number, delta: number) {}
+  update(time: number, delta: number) {
+    this.boulder.update(this.cursors);
+  }
 }
 
 const config: Phaser.Types.Core.GameConfig = {
