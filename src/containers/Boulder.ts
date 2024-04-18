@@ -1,20 +1,16 @@
 import Phaser from "phaser";
 
 export default class Boulder extends Phaser.Physics.Matter.Image {
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    texture: string,
-    frame?: string | number
-  ) {
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene.matter.world, x, y, texture, frame, {
       label: "boulder",
       frictionAir: 0.006,
     });
 
-    this.setScale(0.102);
-    this.setCircle(60, {});
+    // this.setScale(0.3);
+    // this.setCircle(178, {});
+    this.setScale(0.15);
+    this.setCircle(90, {});
     this.setBounce(0.1);
     this.setFriction(1, 0.01, 10);
 

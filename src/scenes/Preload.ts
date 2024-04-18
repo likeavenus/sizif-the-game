@@ -23,7 +23,9 @@ export default class Preloader extends Phaser.Scene {
     /** objects */
 
     /** Images */
-    this.load.image("boulder", "/assets/boulder/boulder.png");
+    this.load.image("boulder", "assets/boulder/boulder.png");
+    /** Spine */
+    this.load.spine("sizif", "assets/sizif/sizif.json", "assets/sizif/sizif.atlas");
   }
 
   create() {
