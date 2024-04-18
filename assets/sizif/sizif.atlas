@@ -1,0 +1,104 @@
+
+sizif.png
+size: 297,1015
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Bedro
+  rotate: true
+  xy: 2, 325
+  size: 123, 173
+  orig: 1922, 1082
+  offset: 863, 350
+  index: -1
+Bedro 2
+  rotate: true
+  xy: 2, 450
+  size: 96, 180
+  orig: 1922, 1082
+  offset: 974, 346
+  index: -1
+Givot
+  rotate: false
+  xy: 152, 2
+  size: 143, 142
+  orig: 1922, 1082
+  offset: 932, 515
+  index: -1
+Goleny
+  rotate: true
+  xy: 2, 687
+  size: 145, 239
+  orig: 1922, 1082
+  offset: 773, 151
+  index: -1
+Goleny 2
+  rotate: false
+  xy: 243, 626
+  size: 49, 206
+  orig: 1922, 1082
+  offset: 1024, 168
+  index: -1
+Head
+  rotate: true
+  xy: 2, 834
+  size: 179, 270
+  orig: 1922, 1082
+  offset: 1056, 621
+  index: -1
+Kisti
+  rotate: false
+  xy: 184, 330
+  size: 110, 134
+  orig: 1922, 1082
+  offset: 768, 363
+  index: -1
+Kisty 2
+  rotate: true
+  xy: 177, 219
+  size: 109, 116
+  orig: 1922, 1082
+  offset: 1152, 370
+  index: -1
+Pletsho
+  rotate: true
+  xy: 190, 466
+  size: 158, 105
+  orig: 1922, 1082
+  offset: 887, 603
+  index: -1
+Pletsho 2
+  rotate: true
+  xy: 2, 144
+  size: 55, 148
+  orig: 1922, 1082
+  offset: 1100, 524
+  index: -1
+Predpleshie
+  rotate: true
+  xy: 2, 201
+  size: 122, 163
+  orig: 1922, 1082
+  offset: 788, 477
+  index: -1
+Predpletshye 2
+  rotate: true
+  xy: 167, 146
+  size: 71, 109
+  orig: 1922, 1082
+  offset: 1123, 439
+  index: -1
+Taz
+  rotate: false
+  xy: 2, 47
+  size: 103, 95
+  orig: 1922, 1082
+  offset: 927, 478
+  index: -1
+Tors
+  rotate: false
+  xy: 2, 548
+  size: 186, 137
+  orig: 1922, 1082
+  offset: 958, 577
+  index: -1
