@@ -44,6 +44,7 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     this.sgo.setMix("idle", "jump", 0.1);
     this.sgo.setMix("idle", "push_right_leg", 0.5);
     this.sgo.setMix("idle", "push_left_leg", 0.5);
+    this.sgo.setMix("idle", "push_right_no_arms", 0.5);
 
     this.sgo.setMix("walk", "push_right_leg", 0.1);
     this.sgo.setMix("walk", "push_left_leg", 0.1);
@@ -88,20 +89,14 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     // scene.input.setDraggable(this.control2);
 
     scene.input.on("pointermove", (pointer, gameObject, dragX, dragY) => {
-      console.log("gameObject", gameObject);
       this.pointerX = pointer.worldX;
       this.pointerY = pointer.worldY;
 
       if (gameObject.length) {
         const bones = gameObject[0].getData("bones");
 
-        console.log("bones: ", bones);
-
         const coords1 = scene.spine.worldToLocal(pointer.x, pointer.y, this.sgo.skeleton, bones[0]);
         const coords2 = scene.spine.worldToLocal(pointer.x, pointer.y, this.sgo.skeleton, bones[1]);
-
-        console.log("coords1: ", coords1);
-        console.log("coords2: ", coords2);
 
         bones[0].x = coords1.x;
         bones[0].y = coords1.y;
@@ -157,8 +152,6 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     this.leftArmHitBox.setFriction(1, 0.1, 10);
     this.rightArmHitBox.setFriction(1, 0.1, 10);
 
-    console.log(this);
-
     scene.add.existing(this);
 
     const bounds = this.sgo.getBounds();
@@ -179,12 +172,12 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
       complete: (entry) => {
         if (entry.animation.name === "push_right_leg") {
           this.sgo.play("idle_right_leg", true);
-          isRightLeg = false;
           this.isPlaying = false;
+          isRightLeg = false;
         } else if (entry.animation.name === "push_left_leg") {
           this.sgo.play("idle_left_leg", true);
-          isRightLeg = true;
           this.isPlaying = false;
+          isRightLeg = true;
         }
       },
     });
@@ -203,7 +196,9 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
   }
 
   rightLegStep() {
+    // this.sgo.play("push_right_no_arms", false);
     this.sgo.play("push_right_leg", false);
+
     this.scene.tweens.add({
       targets: this.sgo,
       x: this.sgo.x + 100,
