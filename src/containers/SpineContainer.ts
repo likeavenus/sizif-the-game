@@ -45,7 +45,7 @@ export default class SpineContainer
     super(scene, x, y);
 
     this.sgo = scene.add
-      .spine(100, innerHeight - 155, key, anim, loop)
+      .spine(100, innerHeight - 300, key, anim, loop)
       .refresh();
     this.sgo.setMix("idle", "walk", 0.1);
     this.sgo.setMix("idle", "jump", 0.1);
