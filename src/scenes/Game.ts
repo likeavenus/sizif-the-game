@@ -12,7 +12,10 @@ class Game extends Phaser.Scene {
   isTouchingGround = false;
   level: number = 1;
   emitter = new Phaser.Events.EventEmitter();
-  music!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  music!:
+    | Phaser.Sound.NoAudioSound
+    | Phaser.Sound.HTML5AudioSound
+    | Phaser.Sound.WebAudioSound;
 
   private backgrounds: {
     ratioX: number;
@@ -34,15 +37,12 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-    const group1 = this.matter.world.nextGroup();
-    const group2 = this.matter.world.nextGroup(true);
-
-    // const montain = this.matter.add.rectangle(0, innerHeight, 5000, 20, {
-    //   isStatic: true,
-    //   angle: Phaser.Math.DegToRad(170),
-    // });
     const montain = this.add.rectangle(0, innerHeight, 5000, 20, 0xffffff);
-    this.matter.add.gameObject(montain, { isStatic: true, angle: Phaser.Math.DegToRad(160) });
+    montain.setDepth(100);
+    this.matter.add.gameObject(montain, {
+      isStatic: true,
+      angle: Phaser.Math.DegToRad(160),
+    });
 
     this.boulder = new Boulder(this, 600, 100, "boulder", undefined);
     this.player = this.add.spineContainer(0, 100, "sizif", "animation", true);
@@ -56,6 +56,31 @@ class Game extends Phaser.Scene {
     this.player.rightArmHitBox.setCollidesWith([2]);
     this.player.leftArmHitBox.setCollidesWith([2]);
 
+    const { width, height } = this.scale;
+
+    this.backgrounds.push(
+      {
+        ratioX: 0.07,
+        ratioY: 0.009,
+        sprite: this.add
+          .tileSprite(0, 0, width, height, "sky")
+          .setOrigin(0, 0)
+          .setScrollFactor(0, 0)
+          .setScale(3, 4),
+        // .setDepth(0),
+      },
+      {
+        ratioX: 0.09,
+        ratioY: 0.02,
+        sprite: this.add
+          .tileSprite(0, 0, width, height, "mountains")
+          .setOrigin(0, 0)
+          .setScrollFactor(0, 0)
+          .setScale(3, 3),
+        // .setDepth(0),
+      }
+    );
+
     // this.player.spine.setCollisionGroup(group1);
 
     // this.boulder.setCollidesWith([group2, group1]);
@@ -68,8 +93,8 @@ class Game extends Phaser.Scene {
 
     // this.physics.add.existing(this.player);
 
-    const text = this.add.text(1200, 20, "Sizif", { fontSize: 18 });
-    this.matter.add.gameObject(text);
+    // const text = this.add.text(1200, 20, "Sizif", { fontSize: 18 });
+    // this.matter.add.gameObject(text);
 
     this.input.on("pointerdown", (pointer) => {});
 
@@ -88,6 +113,14 @@ class Game extends Phaser.Scene {
   update(time: number, delta: number) {
     this.boulder.update(this.cursors);
     this.player.update(this.cameras.main, this.cursors);
+
+    for (let i = 0; i < this.backgrounds.length; ++i) {
+      const bg = this.backgrounds[i];
+      if (bg.sprite) {
+        bg.sprite.tilePositionX = this.cameras.main.scrollX * bg.ratioX;
+        // bg.sprite.tilePositionY = this.cameras.main.scrollY * bg.ratioY;
+      }
+    }
   }
 }
 
@@ -106,7 +139,7 @@ const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: "matter",
     matter: {
-      // debug: true,
+      debug: true,
       setBounds: {
         left: true,
         right: false,
@@ -118,7 +151,9 @@ const config: Phaser.Types.Core.GameConfig = {
   // scene: [Intro, Preloader, Game],
   scene: [Preloader, Game],
   plugins: {
-    scene: [{ key: "SpinePlugin", plugin: window.SpinePlugin, mapping: "spine" }],
+    scene: [
+      { key: "SpinePlugin", plugin: window.SpinePlugin, mapping: "spine" },
+    ],
   },
 };
 

@@ -9,7 +9,10 @@ declare global {
   }
 }
 
-export default class SpineContainer extends Phaser.GameObjects.Container implements ISpineContainer {
+export default class SpineContainer
+  extends Phaser.GameObjects.Container
+  implements ISpineContainer
+{
   private sgo!: SpineGameObject;
   private physicsObject!: Phaser.GameObjects.Arc;
   //   private rightArmHitBox!: Phaser.GameObjects.Arc;
@@ -23,11 +26,6 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
   pointerX = 0;
   pointerY = 0;
 
-  get physicsBody() {
-    console.log(this);
-    return this.physicsObject.body as Phaser.Physics.Arcade.Body;
-  }
-
   get rightHitBox() {
     return this.rightArmHitBox.body as Phaser.Physics.Arcade.Body;
   }
@@ -36,10 +34,19 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     return this.sgo;
   }
 
-  constructor(scene: Phaser.Scene, x: number, y: number, key: string, anim: string, loop = false) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    key: string,
+    anim: string,
+    loop = false
+  ) {
     super(scene, x, y);
 
-    this.sgo = scene.add.spine(100, innerHeight - 155, key, anim, loop).refresh();
+    this.sgo = scene.add
+      .spine(100, innerHeight - 155, key, anim, loop)
+      .refresh();
     this.sgo.setMix("idle", "walk", 0.1);
     this.sgo.setMix("idle", "jump", 0.1);
     this.sgo.setMix("idle", "push_right_leg", 0.5);
@@ -54,9 +61,15 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     const leftArm = this.sgo.skeleton.findBone("bone11");
     const rightArm = this.sgo.skeleton.findBone("bone8");
 
-    this.rightArmHitBox = scene.matter.add.image(rightArm.x, rightArm.y, "boulder", undefined, {
-      isSensor: true,
-    });
+    this.rightArmHitBox = scene.matter.add.image(
+      rightArm.x,
+      rightArm.y,
+      "boulder",
+      undefined,
+      {
+        isSensor: true,
+      }
+    );
 
     this.rightArmHitBox.setBody({
       type: "circle",
@@ -65,9 +78,15 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
 
     this.rightArmHitBox.alpha = 0;
 
-    this.leftArmHitBox = scene.matter.add.image(leftArm.x, leftArm.y, "boulder", undefined, {
-      isSensor: true,
-    });
+    this.leftArmHitBox = scene.matter.add.image(
+      leftArm.x,
+      leftArm.y,
+      "boulder",
+      undefined,
+      {
+        isSensor: true,
+      }
+    );
 
     this.leftArmHitBox.setBody({
       type: "circle",
@@ -79,8 +98,9 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     const IK_ruka_l = this.sgo.skeleton.findBone("IK_ruka_l");
     const IK_ruka_r = this.sgo.skeleton.findBone("IK_ruka_r");
 
-    this.control = scene.add.circle(IK_ruka_l.worldX, IK_ruka_l.worldY, 11, 0xff00ff).setData("bones", [IK_ruka_l, IK_ruka_r]);
-    // this.control2 = scene.add.circle(IK_ruka_r.worldX, IK_ruka_r.worldY, 11, 0xffffff).setData("bone", IK_ruka_r);
+    this.control = scene.add
+      .circle(IK_ruka_l.worldX, IK_ruka_l.worldY, 11, 0xff00ff)
+      .setData("bones", [IK_ruka_l, IK_ruka_r]);
 
     this.control.setInteractive();
     // this.control2.setInteractive();
@@ -95,8 +115,18 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
       if (gameObject.length) {
         const bones = gameObject[0].getData("bones");
 
-        const coords1 = scene.spine.worldToLocal(pointer.x, pointer.y, this.sgo.skeleton, bones[0]);
-        const coords2 = scene.spine.worldToLocal(pointer.x, pointer.y, this.sgo.skeleton, bones[1]);
+        const coords1 = scene.spine.worldToLocal(
+          pointer.x,
+          pointer.y,
+          this.sgo.skeleton,
+          bones[0]
+        );
+        const coords2 = scene.spine.worldToLocal(
+          pointer.x,
+          pointer.y,
+          this.sgo.skeleton,
+          bones[1]
+        );
 
         bones[0].x = coords1.x;
         bones[0].y = coords1.y;
@@ -144,28 +174,32 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     // this.rightArmHitBox.body.setData("bone", rightArm).setInteractive();
 
     scene.matter.add.gameObject(this.sgo);
+
     // this.sgo.body.mass = this.sgo.body.mass * 2;
     this.sgo.setScale(0.27);
     // this.sgo.setFixedRotation();
     // this.sgo.setFriction(1, 0.5);
     this.sgo.setFriction(1, 1, 0);
-    this.leftArmHitBox.setFriction(1, 0.1, 10);
-    this.rightArmHitBox.setFriction(1, 0.1, 10);
-
-    scene.add.existing(this);
+    this.leftArmHitBox.setFriction(1, 1.1, 10);
+    this.rightArmHitBox.setFriction(1, 1.1, 10);
 
     const bounds = this.sgo.getBounds();
     const width = bounds.size.x;
     const height = bounds.size.y;
     this.setPhysicsSize(this.sgo.width * 0.65, this.sgo.height * 0.9);
     this.add(this.sgo);
+    this.setDepth(100);
+    scene.add.existing(this);
 
     const dKey = this.scene.input.keyboard?.addKey("D");
     let isRightLeg = true;
 
     this.sgo.state.addListener({
       start: (entry) => {
-        if (entry.animation.name === "push_right_leg" || entry.animation.name === "push_left_leg") {
+        if (
+          entry.animation.name === "push_right_leg" ||
+          entry.animation.name === "push_left_leg"
+        ) {
           this.isPlaying = true;
         }
       },
@@ -249,7 +283,10 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     // body.setSize(width, height);
   }
 
-  update(camera: Phaser.Cameras.Scene2D.Camera, cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
+  update(
+    camera: Phaser.Cameras.Scene2D.Camera,
+    cursors: Phaser.Types.Input.Keyboard.CursorKeys
+  ) {
     // const { left, right, up, space, q } = cursors;
     // const leftArm = this.sgo.skeleton.findBone("bone11");
     // const rightArm = this.sgo.skeleton.findBone("bone8");
@@ -260,13 +297,30 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     // const IK_ruka_l = this.sgo.skeleton.findBone("IK_ruka_l");
 
     this.rightArmHitBox.copyPosition({
-      x: rightArm.worldX + camera.midPoint.x - this.scene.game.canvas.width / 2 + 5,
-      y: rightArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2 + 10,
+      x:
+        rightArm.worldX +
+        camera.midPoint.x -
+        this.scene.game.canvas.width / 2 +
+        5,
+      y:
+        rightArm.worldY * -1 +
+        this.scene.game.canvas.height +
+        camera.midPoint.y -
+        this.scene.game.canvas.height / 2 +
+        10,
     });
 
     this.leftArmHitBox.copyPosition({
-      x: leftArm.worldX + camera.midPoint.x - this.scene.game.canvas.width / 2 + 5,
-      y: leftArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2,
+      x:
+        leftArm.worldX +
+        camera.midPoint.x -
+        this.scene.game.canvas.width / 2 +
+        5,
+      y:
+        leftArm.worldY * -1 +
+        this.scene.game.canvas.height +
+        camera.midPoint.y -
+        this.scene.game.canvas.height / 2,
     });
 
     this.control.copyPosition({
@@ -338,7 +392,14 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
 
 Phaser.GameObjects.GameObjectFactory.register(
   "spineContainer",
-  function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, key: string, anim: string, loop = false) {
+  function (
+    this: Phaser.GameObjects.GameObjectFactory,
+    x: number,
+    y: number,
+    key: string,
+    anim: string,
+    loop = false
+  ) {
     const container = new SpineContainer(this.scene, x, y, key, anim, loop);
     this.displayList.add(container);
 
