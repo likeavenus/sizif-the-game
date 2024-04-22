@@ -1,124 +1,124 @@
 
 sizif.png
-size: 137,519
+size: 153,462
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Bedro
-  rotate: false
-  xy: 79, 414
+  rotate: true
+  xy: 2, 327
   size: 56, 103
   orig: 57, 105
   offset: 0, 1
   index: -1
 Bedro(2)
-  rotate: false
-  xy: 79, 310
+  rotate: true
+  xy: 2, 195
   size: 53, 102
   orig: 57, 105
   offset: 2, 2
   index: -1
 Golova
-  rotate: false
-  xy: 2, 211
+  rotate: true
+  xy: 2, 15
   size: 71, 85
   orig: 71, 85
   offset: 0, 0
   index: -1
 Ikra
   rotate: false
-  xy: 54, 110
+  xy: 106, 110
   size: 37, 99
   orig: 40, 103
   offset: 1, 2
   index: -1
 Ikra(2)
   rotate: false
-  xy: 2, 14
+  xy: 106, 211
   size: 37, 101
   orig: 40, 103
   offset: 1, 1
   index: -1
 Kisty
   rotate: false
-  xy: 93, 127
-  size: 38, 43
+  xy: 107, 314
+  size: 42, 45
   orig: 42, 45
-  offset: 2, 1
+  offset: 0, 0
   index: -1
 Kisty(2)
-  rotate: true
-  xy: 93, 172
-  size: 38, 42
+  rotate: false
+  xy: 107, 314
+  size: 42, 45
   orig: 42, 45
-  offset: 2, 2
+  offset: 0, 0
   index: -1
 Nosok
   rotate: false
-  xy: 41, 2
+  xy: 89, 2
   size: 28, 17
   orig: 30, 21
   offset: 1, 2
   index: -1
 Nosok(2)
   rotate: false
-  xy: 41, 2
+  xy: 89, 2
   size: 28, 17
   orig: 30, 21
   offset: 1, 2
   index: -1
 Pleho
-  rotate: false
-  xy: 75, 212
-  size: 50, 84
+  rotate: true
+  xy: 2, 88
+  size: 53, 87
   orig: 53, 87
-  offset: 2, 2
+  offset: 0, 0
   index: -1
 Pleho(2)
   rotate: false
-  xy: 41, 21
+  xy: 91, 21
   size: 52, 87
   orig: 53, 87
   offset: 0, 0
   index: -1
 Predplehye
-  rotate: false
-  xy: 2, 117
+  rotate: true
+  xy: 2, 143
   size: 50, 92
   orig: 50, 92
   offset: 0, 0
   index: -1
 Predplehye(2)
-  rotate: false
-  xy: 2, 117
+  rotate: true
+  xy: 2, 143
   size: 50, 92
   orig: 50, 92
   offset: 0, 0
   index: -1
 Stopa
   rotate: true
-  xy: 95, 76
+  xy: 119, 411
   size: 49, 32
   orig: 51, 35
   offset: 1, 2
   index: -1
 Stopa(2)
   rotate: true
-  xy: 95, 26
+  xy: 119, 361
   size: 48, 32
   orig: 51, 35
   offset: 2, 2
   index: -1
 Taz
-  rotate: false
-  xy: 2, 402
+  rotate: true
+  xy: 2, 385
   size: 75, 115
   orig: 75, 115
   offset: 0, 0
   index: -1
 Tors
-  rotate: false
-  xy: 2, 298
+  rotate: true
+  xy: 2, 250
   size: 75, 102
   orig: 75, 102
   offset: 0, 0
