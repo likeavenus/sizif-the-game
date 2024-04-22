@@ -9,10 +9,7 @@ declare global {
   }
 }
 
-export default class SpineContainer
-  extends Phaser.GameObjects.Container
-  implements ISpineContainer
-{
+export default class SpineContainer extends Phaser.GameObjects.Container implements ISpineContainer {
   private sgo!: SpineGameObject;
   private physicsObject!: Phaser.GameObjects.Arc;
   //   private rightArmHitBox!: Phaser.GameObjects.Arc;
@@ -34,42 +31,40 @@ export default class SpineContainer
     return this.sgo;
   }
 
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    key: string,
-    anim: string,
-    loop = false
-  ) {
+  constructor(scene: Phaser.Scene, x: number, y: number, key: string, anim: string, loop = false) {
     super(scene, x, y);
 
-    this.sgo = scene.add
-      .spine(100, innerHeight - 300, key, anim, loop)
-      .refresh();
-    this.sgo.setMix("idle", "walk", 0.1);
-    this.sgo.setMix("idle", "jump", 0.1);
-    this.sgo.setMix("idle", "push_right_leg", 0.5);
-    this.sgo.setMix("idle", "push_left_leg", 0.5);
-    this.sgo.setMix("idle", "push_right_no_arms", 0.5);
+    this.sgo = scene.add.spine(100, 450, key, anim, loop).refresh();
+    // this.sgo.setMix("idle", "walk", 0.1);
+    // this.sgo.setMix("idle", "jump", 0.1);
+    // this.sgo.setMix("idle", "step_right", 0.5);
+    // this.sgo.setMix("idle", "push_left_leg", 0.5);
+    // this.sgo.setMix("idle", "push_right_no_arms", 0.5);
 
-    this.sgo.setMix("walk", "push_right_leg", 0.1);
-    this.sgo.setMix("walk", "push_left_leg", 0.1);
+    // this.sgo.setMix("walk", "step_right", 0.1);
+    // this.sgo.setMix("walk", "push_left_leg", 0.1);
+    this.sgo.setMix("idle", "idle", 0.1);
+    this.sgo.setMix("idle", "jump", 0.1);
+    this.sgo.setMix("idle", "step_right", 0.1);
+    this.sgo.setMix("idle", "step_left", 0.1);
+    // this.sgo.setMix("idle", "push_right_no_arms", 0.5);
+
+    this.sgo.setMix("idle", "idle_left", 0.1);
+    this.sgo.setMix("idle", "idle_right", 0.1);
+
+    this.sgo.setMix("idle_right", "idle_left", 0.1);
+    this.sgo.setMix("idle_left", "idle_right", 0.1);
 
     this.sgo.state.timeScale = 4.0;
 
-    const leftArm = this.sgo.skeleton.findBone("bone11");
-    const rightArm = this.sgo.skeleton.findBone("bone8");
+    // const leftArm = this.sgo.skeleton.findBone("bone11");
+    // const rightArm = this.sgo.skeleton.findBone("bone8");
+    const rightArm = this.sgo.skeleton.findBone("bone7");
+    const leftArm = this.sgo.skeleton.findBone("bone10");
 
-    this.rightArmHitBox = scene.matter.add.image(
-      rightArm.x,
-      rightArm.y,
-      "boulder",
-      undefined,
-      {
-        isSensor: true,
-      }
-    );
+    this.rightArmHitBox = scene.matter.add.image(rightArm.x, rightArm.y, "boulder", undefined, {
+      isSensor: true,
+    });
 
     this.rightArmHitBox.setBody({
       type: "circle",
@@ -78,15 +73,9 @@ export default class SpineContainer
 
     this.rightArmHitBox.alpha = 0;
 
-    this.leftArmHitBox = scene.matter.add.image(
-      leftArm.x,
-      leftArm.y,
-      "boulder",
-      undefined,
-      {
-        isSensor: true,
-      }
-    );
+    this.leftArmHitBox = scene.matter.add.image(leftArm.x, leftArm.y, "boulder", undefined, {
+      isSensor: true,
+    });
 
     this.leftArmHitBox.setBody({
       type: "circle",
@@ -95,12 +84,12 @@ export default class SpineContainer
 
     this.leftArmHitBox.alpha = 0;
 
-    const IK_ruka_l = this.sgo.skeleton.findBone("IK_ruka_l");
-    const IK_ruka_r = this.sgo.skeleton.findBone("IK_ruka_r");
+    const IK_ruka_l = this.sgo.skeleton.findBone("ik_ruka_l");
 
-    this.control = scene.add
-      .circle(IK_ruka_l.worldX, IK_ruka_l.worldY, 11, 0xff00ff)
-      .setData("bones", [IK_ruka_l, IK_ruka_r]);
+    const IK_ruka_r = this.sgo.skeleton.findBone("ik_ruka_r");
+    console.log(IK_ruka_r);
+
+    this.control = scene.add.circle(IK_ruka_l.worldX, IK_ruka_l.worldY, 11, 0xff00ff).setData("bones", [IK_ruka_l, IK_ruka_r]);
 
     this.control.setInteractive();
     // this.control2.setInteractive();
@@ -108,39 +97,29 @@ export default class SpineContainer
     scene.input.setDraggable(this.control);
     // scene.input.setDraggable(this.control2);
 
-    scene.input.on("pointermove", (pointer, gameObject, dragX, dragY) => {
-      this.pointerX = pointer.worldX;
-      this.pointerY = pointer.worldY;
+    // scene.input.on("pointermove", (pointer, gameObject, dragX, dragY) => {
+    //   this.pointerX = pointer.worldX;
+    //   this.pointerY = pointer.worldY;
 
-      if (gameObject.length) {
-        const bones = gameObject[0].getData("bones");
+    //   if (gameObject.length) {
+    //     const bones = gameObject[0].getData("bones");
 
-        const coords1 = scene.spine.worldToLocal(
-          pointer.x,
-          pointer.y,
-          this.sgo.skeleton,
-          bones[0]
-        );
-        const coords2 = scene.spine.worldToLocal(
-          pointer.x,
-          pointer.y,
-          this.sgo.skeleton,
-          bones[1]
-        );
+    //     const coords1 = scene.spine.worldToLocal(pointer.x, pointer.y, this.sgo.skeleton, bones[0]);
+    //     const coords2 = scene.spine.worldToLocal(pointer.x, pointer.y, this.sgo.skeleton, bones[1]);
 
-        bones[0].x = coords1.x;
-        bones[0].y = coords1.y;
+    //     bones[0].x = coords1.x;
+    //     bones[0].y = coords1.y;
 
-        bones[0].update();
+    //     bones[0].update();
 
-        bones[1].x = coords2.x;
-        bones[1].y = coords2.y;
+    //     bones[1].x = coords2.x;
+    //     bones[1].y = coords2.y;
 
-        bones[1].update();
-      }
+    //     bones[1].update();
+    //   }
 
-      //   this.control.copyPosition(pointer.x, pointer.y);
-    });
+    //   //   this.control.copyPosition(pointer.x, pointer.y);
+    // });
     // const debugLineTo = scene.add.graphics();
     // debugLineTo.lineTo(this.x, this.y);
     // debugLineTo.lineTo(control.x, control.y);
@@ -176,7 +155,7 @@ export default class SpineContainer
     scene.matter.add.gameObject(this.sgo);
 
     // this.sgo.body.mass = this.sgo.body.mass * 2;
-    this.sgo.setScale(0.27);
+    this.sgo.setScale(0.8);
     // this.sgo.setFixedRotation();
     // this.sgo.setFriction(1, 0.5);
     this.sgo.setFriction(1, 1, 0);
@@ -196,20 +175,17 @@ export default class SpineContainer
 
     this.sgo.state.addListener({
       start: (entry) => {
-        if (
-          entry.animation.name === "push_right_leg" ||
-          entry.animation.name === "push_left_leg"
-        ) {
+        if (entry.animation.name === "step_left" || entry.animation.name === "step_right") {
           this.isPlaying = true;
         }
       },
       complete: (entry) => {
-        if (entry.animation.name === "push_right_leg") {
-          this.sgo.play("idle_right_leg", true);
+        if (entry.animation.name === "step_right") {
+          this.sgo.play("idle_right", true);
           this.isPlaying = false;
           isRightLeg = false;
-        } else if (entry.animation.name === "push_left_leg") {
-          this.sgo.play("idle_left_leg", true);
+        } else if (entry.animation.name === "step_left") {
+          this.sgo.play("idle_left", true);
           this.isPlaying = false;
           isRightLeg = true;
         }
@@ -226,26 +202,36 @@ export default class SpineContainer
       }
     });
 
-    this.sgo.play("idle", true, true);
+    this.scene.input.on("pointerdown", (pointer) => {
+      if (!this.isPlaying) {
+        if (isRightLeg) {
+          this.rightLegStep();
+        } else {
+          this.leftLegStep();
+        }
+      }
+    });
   }
 
   rightLegStep() {
     // this.sgo.play("push_right_no_arms", false);
-    this.sgo.play("push_right_leg", false);
+    this.sgo.play("step_right", false);
 
     this.scene.tweens.add({
       targets: this.sgo,
-      x: this.sgo.x + 100,
+      x: this.sgo.x + 140,
       duration: 700,
       ease: "cubic.in",
     });
   }
 
   leftLegStep() {
-    this.sgo.play("push_left_leg", false);
+    // this.sgo.play("push_left_leg", false);
+    this.sgo.play("step_left", false);
+
     this.scene.tweens.add({
       targets: this.sgo,
-      x: this.sgo.x + 100,
+      x: this.sgo.x + 140,
       duration: 700,
       ease: "cubic.in",
     });
@@ -283,50 +269,34 @@ export default class SpineContainer
     // body.setSize(width, height);
   }
 
-  update(
-    camera: Phaser.Cameras.Scene2D.Camera,
-    cursors: Phaser.Types.Input.Keyboard.CursorKeys
-  ) {
+  update(camera: Phaser.Cameras.Scene2D.Camera, cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
     // const { left, right, up, space, q } = cursors;
     // const leftArm = this.sgo.skeleton.findBone("bone11");
     // const rightArm = this.sgo.skeleton.findBone("bone8");
     // const isAttack = this.spine.getData("attack");
 
-    const rightArm = this.sgo.skeleton.findBone("bone8");
-    const leftArm = this.sgo.skeleton.findBone("bone11");
+    const rightArm = this.sgo.skeleton.findBone("bone7");
+    const leftArm = this.sgo.skeleton.findBone("bone10");
     // const IK_ruka_l = this.sgo.skeleton.findBone("IK_ruka_l");
 
     this.rightArmHitBox.copyPosition({
-      x:
-        rightArm.worldX +
-        camera.midPoint.x -
-        this.scene.game.canvas.width / 2 +
-        5,
-      y:
-        rightArm.worldY * -1 +
-        this.scene.game.canvas.height +
-        camera.midPoint.y -
-        this.scene.game.canvas.height / 2 +
-        10,
+      x: rightArm.worldX + camera.midPoint.x - this.scene.game.canvas.width / 2 + 5,
+      y: rightArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2 + 10,
     });
 
     this.leftArmHitBox.copyPosition({
-      x:
-        leftArm.worldX +
-        camera.midPoint.x -
-        this.scene.game.canvas.width / 2 +
-        5,
-      y:
-        leftArm.worldY * -1 +
-        this.scene.game.canvas.height +
-        camera.midPoint.y -
-        this.scene.game.canvas.height / 2,
+      x: leftArm.worldX + camera.midPoint.x - this.scene.game.canvas.width / 2 + 5,
+      y: leftArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2,
     });
 
     this.control.copyPosition({
       x: this.pointerX,
       y: this.pointerY,
     });
+
+    // if (this.sgo.body?.velocity < 0) {
+    //   this.sgo.play("falling", true);
+    // }
 
     // this.control2.copyPosition({
     //   x: this.pointerX,
@@ -392,14 +362,7 @@ export default class SpineContainer
 
 Phaser.GameObjects.GameObjectFactory.register(
   "spineContainer",
-  function (
-    this: Phaser.GameObjects.GameObjectFactory,
-    x: number,
-    y: number,
-    key: string,
-    anim: string,
-    loop = false
-  ) {
+  function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, key: string, anim: string, loop = false) {
     const container = new SpineContainer(this.scene, x, y, key, anim, loop);
     this.displayList.add(container);
 

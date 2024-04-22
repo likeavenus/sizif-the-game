@@ -30,10 +30,7 @@ class Game extends Phaser.Scene {
   isTouchingGround = false;
   level: number = 1;
   emitter = new Phaser.Events.EventEmitter();
-  music!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound;
+  music!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
   private backgrounds: {
     ratioX: number;
@@ -61,9 +58,12 @@ class Game extends Phaser.Scene {
     //   isStatic: true,
     //   angle: Phaser.Math.DegToRad(160),
     // });
+    // const s = this.matter.add.image(600, 300, "s", undefined).setDepth(10);
 
-    this.boulder = new Boulder(this, 600, 100, "boulder", undefined);
-    this.player = this.add.spineContainer(0, 100, "sizif", "animation", true);
+    this.boulder = new Boulder(this, 600, 300, "boulder", undefined);
+    // this.player = this.add.spineContainer(0, 100, "sizif", "animation", true);
+    this.player = this.add.spineContainer(0, 185, "sizif2", "idle", true);
+
     this.player.spine.setCollisionCategory(1);
     this.boulder.setCollisionCategory(2);
     this.player.rightArmHitBox.setCollisionCategory(3);
@@ -80,23 +80,15 @@ class Game extends Phaser.Scene {
       {
         ratioX: 0.07,
         ratioY: 0.009,
-        sprite: this.add
-          .tileSprite(0, 0, width, height, "sky")
-          .setOrigin(0, 0)
-          .setScrollFactor(0, 0)
-          .setScale(3, 4),
-        // .setDepth(0),
-      },
-      {
-        ratioX: 0.09,
-        ratioY: 0.02,
-        sprite: this.add
-          .tileSprite(0, 0, width, height, "mountains")
-          .setOrigin(0, 0)
-          .setScrollFactor(0, 0)
-          .setScale(3, 3),
+        sprite: this.add.tileSprite(0, 0, width, height, "sky").setOrigin(0, 0).setScrollFactor(0, 0).setScale(3, 4),
         // .setDepth(0),
       }
+      // {
+      //   ratioX: 0.09,
+      //   ratioY: 0.02,
+      //   sprite: this.add.tileSprite(0, 0, width, height, "mountains").setOrigin(0, 0).setScrollFactor(0, 0).setScale(4, 5),
+      //   // .setDepth(0),
+      // }
     );
 
     // this.player.spine.setCollisionGroup(group1);
@@ -113,8 +105,6 @@ class Game extends Phaser.Scene {
 
     // const text = this.add.text(1200, 20, "Sizif", { fontSize: 18 });
     // this.matter.add.gameObject(text);
-
-    this.input.on("pointerdown", (pointer) => {});
 
     // const eKey = this.input.keyboard?.addKey("E");
     // const space = this.input.keyboard.addKey("space");
@@ -137,10 +127,7 @@ class Game extends Phaser.Scene {
       this.mountainGraphics[i] = this.add.graphics();
 
       // generateTerrain is the method to generate the terrain. The arguments are the graphics object and the start position
-      this.mountainStart = this.generateTerrain(
-        this.mountainGraphics[i],
-        this.mountainStart
-      );
+      this.mountainStart = this.generateTerrain(this.mountainGraphics[i], this.mountainStart);
     }
   }
 
@@ -163,7 +150,7 @@ class Game extends Phaser.Scene {
   }
   // method to generate the terrain. Arguments: the graphics object and the start position
   generateTerrain(graphics, mountainStart) {
-    // array to store slope points
+    // array to store slope points (точки наклона)
     let slopePoints = [];
 
     // variable to count the amount of slopes
@@ -173,18 +160,12 @@ class Game extends Phaser.Scene {
     let slopeStart = new Phaser.Math.Vector2(0, mountainStart.y);
 
     // set a random slope length
-    let slopeLength = Phaser.Math.Between(
-      gameOptions.slopeLength[0],
-      gameOptions.slopeLength[1]
-    );
+    let slopeLength = Phaser.Math.Between(gameOptions.slopeLength[0], gameOptions.slopeLength[1]);
 
     // determine slope end point, with an exception if this is the first slope of the fist mountain: we want it to be flat
     let slopeEnd =
       mountainStart.x == 0
-        ? new Phaser.Math.Vector2(
-            slopeStart.x + gameOptions.slopeLength[1] * 1.5,
-            0
-          )
+        ? new Phaser.Math.Vector2(slopeStart.x + gameOptions.slopeLength[1] * 1.5, 0)
         : new Phaser.Math.Vector2(slopeStart.x + slopeLength, Math.random());
 
     // current horizontal point
@@ -193,11 +174,7 @@ class Game extends Phaser.Scene {
     // while we have less slopes than regular slopes amount per mountain...
     while (slopes < gameOptions.slopesPerMountain) {
       // slope interpolation value
-      let interpolationVal = this.interpolate(
-        slopeStart.y,
-        slopeEnd.y,
-        (pointX - slopeStart.x) / (slopeEnd.x - slopeStart.x)
-      );
+      let interpolationVal = this.interpolate(slopeStart.y, slopeEnd.y, (pointX - slopeStart.x) / (slopeEnd.x - slopeStart.x));
 
       // if current point is at the end of the slope...
       if (pointX == slopeEnd.x) {
@@ -208,27 +185,17 @@ class Game extends Phaser.Scene {
         slopeStart = new Phaser.Math.Vector2(pointX, slopeEnd.y);
 
         // next slope end position
-        slopeEnd = new Phaser.Math.Vector2(
-          slopeEnd.x +
-            Phaser.Math.Between(
-              gameOptions.slopeLength[0],
-              gameOptions.slopeLength[1]
-            ),
-          Math.random()
-        );
+        slopeEnd = new Phaser.Math.Vector2(slopeEnd.x + Phaser.Math.Between(gameOptions.slopeLength[0], gameOptions.slopeLength[1]), Math.random());
 
         // no need to interpolate, we use slope start y value
         interpolationVal = slopeStart.y;
       }
 
       // current vertical point
-      let pointY =
-        game.config.height * gameOptions.startTerrainHeight +
-        interpolationVal * gameOptions.amplitude;
+      let pointY = game.config.height * gameOptions.startTerrainHeight + interpolationVal * gameOptions.amplitude;
 
       // add new point to slopePoints array
       slopePoints.push(new Phaser.Math.Vector2(pointX, pointY));
-
       // move on to next point
       pointX++;
     }
@@ -242,7 +209,7 @@ class Game extends Phaser.Scene {
     // draw the ground
     graphics.clear();
     graphics.moveTo(0, game.config.height);
-    graphics.fillStyle(0x654b35);
+    graphics.fillStyle(0xfcb95b);
     graphics.beginPath();
     simpleSlope.forEach(
       function (point) {
@@ -255,7 +222,7 @@ class Game extends Phaser.Scene {
     graphics.fillPath();
 
     // draw the grass
-    graphics.lineStyle(16, 0x6b9b1e);
+    graphics.lineStyle(16, 0xd09b51);
     graphics.beginPath();
     simpleSlope.forEach(function (point) {
       graphics.lineTo(point.x, point.y);
@@ -265,12 +232,7 @@ class Game extends Phaser.Scene {
     // loop through all simpleSlope points starting from the second
     for (let i = 1; i < simpleSlope.length; i++) {
       // define a line between previous and current simpleSlope points
-      let line = new Phaser.Geom.Line(
-        simpleSlope[i - 1].x,
-        simpleSlope[i - 1].y,
-        simpleSlope[i].x,
-        simpleSlope[i].y
-      );
+      let line = new Phaser.Geom.Line(simpleSlope[i - 1].x, simpleSlope[i - 1].y, simpleSlope[i].x, simpleSlope[i].y);
 
       // calculate line length, which is the distance between the two points
       let distance = Phaser.Geom.Line.Length(line);
@@ -284,18 +246,12 @@ class Game extends Phaser.Scene {
       // if the pool is empty...
       if (this.bodyPool.length == 0) {
         // create a new rectangle body
-        this.matter.add.rectangle(
-          center.x + mountainStart.x,
-          center.y,
-          distance,
-          10,
-          {
-            isStatic: true,
-            angle: angle,
-            friction: 1,
-            restitution: 0,
-          }
-        );
+        this.matter.add.rectangle(center.x + mountainStart.x, center.y, distance, 10, {
+          isStatic: true,
+          angle: angle,
+          friction: 1,
+          restitution: 0,
+        });
       }
 
       // if the pool is not empty...
@@ -352,9 +308,7 @@ const config: Phaser.Types.Core.GameConfig = {
   // scene: [Intro, Preloader, Game],
   scene: [Preloader, Game],
   plugins: {
-    scene: [
-      { key: "SpinePlugin", plugin: window.SpinePlugin, mapping: "spine" },
-    ],
+    scene: [{ key: "SpinePlugin", plugin: window.SpinePlugin, mapping: "spine" }],
   },
 };
 
