@@ -1,0 +1,125 @@
+
+sizif.png
+size: 137,519
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Bedro
+  rotate: false
+  xy: 79, 414
+  size: 56, 103
+  orig: 57, 105
+  offset: 0, 1
+  index: -1
+Bedro(2)
+  rotate: false
+  xy: 79, 310
+  size: 53, 102
+  orig: 57, 105
+  offset: 2, 2
+  index: -1
+Golova
+  rotate: false
+  xy: 2, 211
+  size: 71, 85
+  orig: 71, 85
+  offset: 0, 0
+  index: -1
+Ikra
+  rotate: false
+  xy: 54, 110
+  size: 37, 99
+  orig: 40, 103
+  offset: 1, 2
+  index: -1
+Ikra(2)
+  rotate: false
+  xy: 2, 14
+  size: 37, 101
+  orig: 40, 103
+  offset: 1, 1
+  index: -1
+Kisty
+  rotate: false
+  xy: 93, 127
+  size: 38, 43
+  orig: 42, 45
+  offset: 2, 1
+  index: -1
+Kisty(2)
+  rotate: true
+  xy: 93, 172
+  size: 38, 42
+  orig: 42, 45
+  offset: 2, 2
+  index: -1
+Nosok
+  rotate: false
+  xy: 41, 2
+  size: 28, 17
+  orig: 30, 21
+  offset: 1, 2
+  index: -1
+Nosok(2)
+  rotate: false
+  xy: 41, 2
+  size: 28, 17
+  orig: 30, 21
+  offset: 1, 2
+  index: -1
+Pleho
+  rotate: false
+  xy: 75, 212
+  size: 50, 84
+  orig: 53, 87
+  offset: 2, 2
+  index: -1
+Pleho(2)
+  rotate: false
+  xy: 41, 21
+  size: 52, 87
+  orig: 53, 87
+  offset: 0, 0
+  index: -1
+Predplehye
+  rotate: false
+  xy: 2, 117
+  size: 50, 92
+  orig: 50, 92
+  offset: 0, 0
+  index: -1
+Predplehye(2)
+  rotate: false
+  xy: 2, 117
+  size: 50, 92
+  orig: 50, 92
+  offset: 0, 0
+  index: -1
+Stopa
+  rotate: true
+  xy: 95, 76
+  size: 49, 32
+  orig: 51, 35
+  offset: 1, 2
+  index: -1
+Stopa(2)
+  rotate: true
+  xy: 95, 26
+  size: 48, 32
+  orig: 51, 35
+  offset: 2, 2
+  index: -1
+Taz
+  rotate: false
+  xy: 2, 402
+  size: 75, 115
+  orig: 75, 115
+  offset: 0, 0
+  index: -1
+Tors
+  rotate: false
+  xy: 2, 298
+  size: 75, 102
+  orig: 75, 102
+  offset: 0, 0
+  index: -1
