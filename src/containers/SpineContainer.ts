@@ -22,6 +22,7 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
   isPlaying = false;
   pointerX = 0;
   pointerY = 0;
+  canPushBoulder = false;
 
   get rightHitBox() {
     return this.rightArmHitBox.body as Phaser.Physics.Arcade.Body;
@@ -34,7 +35,7 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
   constructor(scene: Phaser.Scene, x: number, y: number, key: string, anim: string, loop = false) {
     super(scene, x, y);
 
-    this.sgo = scene.add.spine(100, 450, key, anim, loop).refresh();
+    this.sgo = scene.add.spine(100, 500, key, anim, loop).refresh();
     // this.sgo.setMix("idle", "walk", 0.1);
     // this.sgo.setMix("idle", "jump", 0.1);
     // this.sgo.setMix("idle", "step_right", 0.5);
@@ -153,14 +154,21 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     // this.rightArmHitBox.body.setData("bone", rightArm).setInteractive();
 
     scene.matter.add.gameObject(this.sgo);
+    console.log(this.sgo);
+
+    // this.scene.matter.world.on("collisionstart", (e, bodyA, bodyB) => {
+    //   console.log("bodyA", bodyA);
+    // });
+
+    // this.scene.matter.world.on("collisionend", (e, bodyA, bodyB) => {});
 
     // this.sgo.body.mass = this.sgo.body.mass * 2;
-    this.sgo.setScale(0.8);
+    this.sgo.setScale(0.7);
     // this.sgo.setFixedRotation();
     // this.sgo.setFriction(1, 0.5);
     this.sgo.setFriction(1, 1, 0);
-    this.leftArmHitBox.setFriction(1, 1.1, 10);
-    this.rightArmHitBox.setFriction(1, 1.1, 10);
+    this.leftArmHitBox.setFriction(1, 0.01, 10);
+    this.rightArmHitBox.setFriction(1, 0.01, 10);
 
     const bounds = this.sgo.getBounds();
     const width = bounds.size.x;
@@ -202,15 +210,37 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
       }
     });
 
-    this.scene.input.on("pointerdown", (pointer) => {
-      if (!this.isPlaying) {
-        if (isRightLeg) {
-          this.rightLegStep();
-        } else {
-          this.leftLegStep();
-        }
-      }
+    // this.scene.input.on("pointerdown", (pointer) => {
+    //   if (!this.isPlaying) {
+    //     if (isRightLeg) {
+    //       this.rightLegStep();
+    //     } else {
+    //       this.leftLegStep();
+    //     }
+    //   }
+    // });
+
+    this.pushText = this.scene.add.text(0, 0, "Press E to Push", {
+      fontSize: "16px",
+      backgroundColor: "#000",
+      color: "#fff",
+      padding: { x: 5, y: 2 },
     });
+    this.pushText.setVisible(false);
+
+    this.add(this.pushText);
+
+    const eKey = this.scene.input.keyboard?.addKey("E");
+    eKey?.on(
+      "down",
+      () => {
+        if (this.canPushBoulder) {
+          console.log("can push");
+          this.sgo.play("idle_right", true);
+        }
+      },
+      this.scene
+    );
   }
 
   rightLegStep() {
@@ -219,7 +249,7 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
 
     this.scene.tweens.add({
       targets: this.sgo,
-      x: this.sgo.x + 140,
+      x: this.sgo.x + 115,
       duration: 700,
       ease: "cubic.in",
     });
@@ -231,7 +261,7 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
 
     this.scene.tweens.add({
       targets: this.sgo,
-      x: this.sgo.x + 140,
+      x: this.sgo.x + 115,
       duration: 700,
       ease: "cubic.in",
     });
@@ -269,6 +299,19 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     // body.setSize(width, height);
   }
 
+  public checkCanPush(x1: number, y1: number, x2: number, y2: number) {
+    const distance = Phaser.Math.Distance.Between(x1, y1, x2, y2);
+
+    if (distance < 370) {
+      this.canPushBoulder = true;
+      this.pushText.setVisible(true);
+      this.pushText.setPosition(this.sgo.x - this.sgo.width / 2, this.sgo.y - this.sgo.height + 50);
+    } else {
+      this.pushText.setVisible(false);
+      this.canPushBoulder = false;
+    }
+  }
+
   update(camera: Phaser.Cameras.Scene2D.Camera, cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
     // const { left, right, up, space, q } = cursors;
     // const leftArm = this.sgo.skeleton.findBone("bone11");
@@ -281,82 +324,18 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
 
     this.rightArmHitBox.copyPosition({
       x: rightArm.worldX + camera.midPoint.x - this.scene.game.canvas.width / 2 + 5,
-      y: rightArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2 + 10,
+      y: rightArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2 - 10,
     });
 
     this.leftArmHitBox.copyPosition({
       x: leftArm.worldX + camera.midPoint.x - this.scene.game.canvas.width / 2 + 5,
-      y: leftArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2,
+      y: leftArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2 - 10,
     });
 
     this.control.copyPosition({
       x: this.pointerX,
       y: this.pointerY,
     });
-
-    // if (this.sgo.body?.velocity < 0) {
-    //   this.sgo.play("falling", true);
-    // }
-
-    // this.control2.copyPosition({
-    //   x: this.pointerX,
-    //   y: this.pointerY,
-    // });
-
-    // this.rightArmHitBox.setPosition(rightArm.x, rightArm.y);
-
-    // const leftHitboxCoords = {
-    //   x: leftArm.worldX + camera.midPoint.x - this.scene.game.canvas.width / 2,
-    //   y: leftArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2 - 10,
-    // };
-    // const rightHitboxCoords = {
-    //   x: rightArm.worldX + camera.midPoint.x - this.scene.game.canvas.width / 2 - 10,
-    //   y: rightArm.worldY * -1 + this.scene.game.canvas.height + camera.midPoint.y - this.scene.game.canvas.height / 2,
-    // };
-
-    // if (this.direction > 0) {
-    //   rightHitboxCoords.x += 60;
-    // } else {
-    //   rightHitboxCoords.x -= 90;
-    // }
-
-    // this.physicsBody.position.copy(leftHitboxCoords);
-    // this.rightHitBox.position.copy(rightHitboxCoords);
-
-    // if (left.isDown && !this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q).isDown) {
-    //   this.faceDirection(-1);
-    //   this.body.setVelocityX(-550);
-    //   if (this.body.blocked.down) {
-    //     this.sgo.play("walk", true, true);
-    //   }
-    // } else if (right.isDown && !this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q).isDown) {
-    //   this.faceDirection(1);
-    //   this.body.setVelocityX(550);
-    //   this.faceDirection(1);
-    //   if (this.body.blocked.down) {
-    //     this.sgo.play("walk", true, true);
-    //   }
-    // } else if (!isAttack && this.body.blocked.down) {
-    //   this.sgo.play("idle", true, true);
-    // }
-    // // controls up
-    // if (up.isDown && this.body.blocked.down) {
-    //   // this.spine.play("jump", false, true);
-    //   // this.body.setVelocityY(-600);
-    // }
-    // if (this.body.blocked.down) {
-    // }
-    // // TODO: сделать отдельную анимацию падения
-    // if (!this.body.blocked.down) {
-    //   // this.spine.play("jump", false, true);
-    // }
-
-    // if (this.hp > 0) {
-    //   this.drawHealthBar();
-    // } else {
-    //   this.healthBar.clear();
-    //   // this.destroy(true);
-    // }
   }
 }
 

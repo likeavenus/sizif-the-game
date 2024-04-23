@@ -5,6 +5,7 @@ import Boulder from "../containers/Boulder";
 import "phaser/plugins/spine/dist/SpinePlugin";
 import "../containers/SpineContainer";
 import simplify from "simplify-js";
+import SpineContainer from "../containers/SpineContainer";
 
 let gameOptions = {
   // start vertical point of the terrain, 0 = very top; 1 = very bottom
@@ -25,12 +26,14 @@ let gameOptions = {
 
 class Game extends Phaser.Scene {
   cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
-  player!: ISpineContainer;
+  // player!: ISpineContainer;
+  player!: SpineContainer;
   boulder!: Boulder;
   isTouchingGround = false;
   level: number = 1;
   emitter = new Phaser.Events.EventEmitter();
   music!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  canPushBoulder = false;
 
   private backgrounds: {
     ratioX: number;
@@ -62,7 +65,7 @@ class Game extends Phaser.Scene {
 
     this.boulder = new Boulder(this, 600, 300, "boulder", undefined);
     // this.player = this.add.spineContainer(0, 100, "sizif", "animation", true);
-    this.player = this.add.spineContainer(0, 185, "sizif2", "idle", true);
+    this.player = this.add.spineContainer(0, 130, "sizif2", "idle", true);
 
     this.player.spine.setCollisionCategory(1);
     this.boulder.setCollisionCategory(2);
@@ -91,30 +94,10 @@ class Game extends Phaser.Scene {
       // }
     );
 
-    // this.player.spine.setCollisionGroup(group1);
-
-    // this.boulder.setCollidesWith([group2, group1]);
-
-    // this.player.rightArmHitBox.setCollisionGroup(group2);
-    // this.player.leftArmHitBox.setCollisionGroup(group2);
-
-    // this.player.rightArmHitBox.setCollidesWith([group2]);
-    // this.player.leftArmHitBox.setCollidesWith([group2]);
-
-    // this.physics.add.existing(this.player);
-
-    // const text = this.add.text(1200, 20, "Sizif", { fontSize: 18 });
-    // this.matter.add.gameObject(text);
-
-    // const eKey = this.input.keyboard?.addKey("E");
-    // const space = this.input.keyboard.addKey("space");
-    // space.on("down", () => {});
-
     this.matter.add.mouseSpring();
 
     const debugLayer = this.add.graphics();
 
-    // this.cameras.main.setFollowOffset(-30, 80);
     this.cameras.main.startFollow(this.player.sgo);
 
     this.mountainGraphics = [];
@@ -135,13 +118,15 @@ class Game extends Phaser.Scene {
     this.boulder.update(this.cursors);
     this.player.update(this.cameras.main, this.cursors);
 
-    for (let i = 0; i < this.backgrounds.length; ++i) {
-      const bg = this.backgrounds[i];
-      if (bg.sprite) {
-        bg.sprite.tilePositionX = this.cameras.main.scrollX * bg.ratioX;
-        // bg.sprite.tilePositionY = this.cameras.main.scrollY * bg.ratioY;
-      }
-    }
+    // for (let i = 0; i < this.backgrounds.length; ++i) {
+    //   const bg = this.backgrounds[i];
+    //   if (bg.sprite) {
+    //     bg.sprite.tilePositionX = this.cameras.main.scrollX * bg.ratioX;
+    //     // bg.sprite.tilePositionY = this.cameras.main.scrollY * bg.ratioY;
+    //   }
+    // }
+
+    this.player.checkCanPush(this.player.sgo.x, this.player.sgo.y, this.boulder.x, this.boulder.y);
   }
 
   interpolate(vFrom, vTo, delta) {
@@ -171,6 +156,8 @@ class Game extends Phaser.Scene {
     // current horizontal point
     let pointX = 0;
 
+    let deltaY = Math.random() * 2 - 0.5;
+
     // while we have less slopes than regular slopes amount per mountain...
     while (slopes < gameOptions.slopesPerMountain) {
       // slope interpolation value
@@ -180,6 +167,7 @@ class Game extends Phaser.Scene {
       if (pointX == slopeEnd.x) {
         // increase slopes amount
         slopes++;
+        // slopeEnd.y -= deltaY;
 
         // next slope start position
         slopeStart = new Phaser.Math.Vector2(pointX, slopeEnd.y);
@@ -296,7 +284,7 @@ const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: "matter",
     matter: {
-      // debug: true,
+      debug: true,
       setBounds: {
         left: true,
         right: false,

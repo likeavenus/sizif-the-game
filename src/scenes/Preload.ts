@@ -25,15 +25,15 @@ export default class Preloader extends Phaser.Scene {
     // this.load.image("sky_lightened", "assets/background/sky_lightened.png");
     this.load.image("mountains", "assets/background/mountains.png");
     this.load.image("sky", "assets/background/sky.png");
-    this.load.image("s", "assets/sizif/sizif-example.png");
     /** Atlases */
 
     /** objects */
 
     /** Images */
     this.load.image("boulder", "assets/boulder/boulder.png");
+    /** Physics editor */
+    this.load.json("boulder_shapes", "assets/boulder/boulder_shapes.json");
     /** Spine */
-    this.load.spine("sizif", "assets/sizif/sizif.json", "assets/sizif/sizif.atlas");
 
     this.load.spine("sizif2", "assets/sizif2/sizif.json", "assets/sizif2/sizif.atlas");
   }

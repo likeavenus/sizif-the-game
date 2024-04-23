@@ -1,125 +1,125 @@
 
 sizif.png
-size: 153,462
+size: 449,142
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Bedro
-  rotate: true
-  xy: 2, 327
-  size: 56, 103
-  orig: 57, 105
-  offset: 0, 1
-  index: -1
-Bedro(2)
-  rotate: true
-  xy: 2, 195
+  rotate: false
+  xy: 79, 38
   size: 53, 102
   orig: 57, 105
   offset: 2, 2
   index: -1
+Bedro(2)
+  rotate: false
+  xy: 207, 41
+  size: 51, 99
+  orig: 57, 105
+  offset: 3, 3
+  index: -1
 Golova
-  rotate: true
-  xy: 2, 15
-  size: 71, 85
+  rotate: false
+  xy: 366, 58
+  size: 68, 82
   orig: 71, 85
-  offset: 0, 0
+  offset: 2, 2
   index: -1
 Ikra
-  rotate: false
-  xy: 106, 110
-  size: 37, 99
+  rotate: true
+  xy: 223, 3
+  size: 36, 99
   orig: 40, 103
-  offset: 1, 2
+  offset: 2, 2
   index: -1
 Ikra(2)
-  rotate: false
-  xy: 106, 211
-  size: 37, 101
+  rotate: true
+  xy: 223, 3
+  size: 36, 99
   orig: 40, 103
-  offset: 1, 1
+  offset: 2, 2
   index: -1
 Kisty
-  rotate: false
-  xy: 107, 314
-  size: 42, 45
+  rotate: true
+  xy: 180, 2
+  size: 37, 41
   orig: 42, 45
-  offset: 0, 0
+  offset: 3, 2
   index: -1
 Kisty(2)
   rotate: false
-  xy: 107, 314
-  size: 42, 45
+  xy: 408, 15
+  size: 39, 41
   orig: 42, 45
-  offset: 0, 0
+  offset: 2, 2
   index: -1
 Nosok
   rotate: false
-  xy: 89, 2
+  xy: 2, 6
   size: 28, 17
   orig: 30, 21
   offset: 1, 2
   index: -1
 Nosok(2)
   rotate: false
-  xy: 89, 2
+  xy: 2, 6
   size: 28, 17
   orig: 30, 21
   offset: 1, 2
   index: -1
 Pleho
   rotate: true
-  xy: 2, 88
-  size: 53, 87
+  xy: 324, 2
+  size: 49, 82
   orig: 53, 87
-  offset: 0, 0
+  offset: 2, 3
   index: -1
 Pleho(2)
   rotate: false
-  xy: 91, 21
+  xy: 312, 53
   size: 52, 87
   orig: 53, 87
   offset: 0, 0
   index: -1
 Predplehye
-  rotate: true
-  xy: 2, 143
+  rotate: false
+  xy: 260, 48
   size: 50, 92
   orig: 50, 92
   offset: 0, 0
   index: -1
 Predplehye(2)
-  rotate: true
-  xy: 2, 143
+  rotate: false
+  xy: 260, 48
   size: 50, 92
   orig: 50, 92
   offset: 0, 0
   index: -1
 Stopa
-  rotate: true
-  xy: 119, 411
+  rotate: false
+  xy: 79, 4
   size: 49, 32
   orig: 51, 35
   offset: 1, 2
   index: -1
 Stopa(2)
-  rotate: true
-  xy: 119, 361
+  rotate: false
+  xy: 130, 4
   size: 48, 32
   orig: 51, 35
   offset: 2, 2
   index: -1
 Taz
-  rotate: true
-  xy: 2, 385
+  rotate: false
+  xy: 2, 25
   size: 75, 115
   orig: 75, 115
   offset: 0, 0
   index: -1
 Tors
-  rotate: true
-  xy: 2, 250
-  size: 75, 102
+  rotate: false
+  xy: 134, 41
+  size: 71, 99
   orig: 75, 102
-  offset: 0, 0
+  offset: 2, 1
   index: -1
