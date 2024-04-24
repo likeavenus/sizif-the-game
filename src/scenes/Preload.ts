@@ -31,10 +31,14 @@ export default class Preloader extends Phaser.Scene {
 
     /** Images */
     this.load.image("boulder", "assets/boulder/boulder.png");
+    this.load.image("boulder_gray", "assets/boulder/boulder_gray.png");
+    this.load.image("vase", "assets/vase/vase.png");
+
     /** Physics editor */
     this.load.json("boulder_shapes", "assets/boulder/boulder_shapes.json");
-    /** Spine */
+    this.load.json("vase", "assets/vase/vase.json");
 
+    /** Spine */
     this.load.spine("sizif2", "assets/sizif2/sizif.json", "assets/sizif2/sizif.atlas");
   }
 

@@ -15,13 +15,13 @@ let gameOptions = {
   amplitude: 100,
 
   // slope length range, in pixels
-  slopeLength: [150, 350],
+  slopeLength: [150, 1050],
 
   // a mountain is a a group of slopes.
-  mountainsAmount: 2,
+  mountainsAmount: 1,
 
   // amount of slopes for each mountain
-  slopesPerMountain: 10,
+  slopesPerMountain: 40,
 };
 
 class Game extends Phaser.Scene {
@@ -63,19 +63,19 @@ class Game extends Phaser.Scene {
     // });
     // const s = this.matter.add.image(600, 300, "s", undefined).setDepth(10);
 
-    this.boulder = new Boulder(this, 600, 300, "boulder", undefined);
+    this.boulder = new Boulder(this, 600, 300, "boulder_gray", undefined);
     // this.player = this.add.spineContainer(0, 100, "sizif", "animation", true);
-    this.player = this.add.spineContainer(0, 130, "sizif2", "idle", true);
+    this.player = this.add.spineContainer(0, 140, "sizif2", "idle", true);
 
-    this.player.spine.setCollisionCategory(1);
-    this.boulder.setCollisionCategory(2);
-    this.player.rightArmHitBox.setCollisionCategory(3);
-    this.player.leftArmHitBox.setCollisionCategory(4);
+    this.player.spine.setCollisionCategory(2);
+    this.boulder.setCollisionCategory(4);
+    this.player.rightArmHitBox.setCollisionCategory(0);
+    this.player.leftArmHitBox.setCollisionCategory(8);
 
-    this.player.spine.setCollidesWith([1, 2]);
-    this.boulder.setCollidesWith([3, 4]);
-    this.player.rightArmHitBox.setCollidesWith([2]);
-    this.player.leftArmHitBox.setCollidesWith([2]);
+    // this.player.spine.setCollidesWith([4]);
+    this.boulder.setCollidesWith([8, 1]);
+    // this.player.rightArmHitBox.setCollidesWith([2]);
+    this.player.leftArmHitBox.setCollidesWith([4]);
 
     const { width, height } = this.scale;
 
@@ -95,6 +95,7 @@ class Game extends Phaser.Scene {
     );
 
     this.matter.add.mouseSpring();
+    // this.boulder.enableDra
 
     const debugLayer = this.add.graphics();
 
@@ -112,6 +113,9 @@ class Game extends Phaser.Scene {
       // generateTerrain is the method to generate the terrain. The arguments are the graphics object and the start position
       this.mountainStart = this.generateTerrain(this.mountainGraphics[i], this.mountainStart);
     }
+
+    this.vases = this.generateVases();
+    // this.matter.world.on("collisionstart", this.handleCollision, this);
   }
 
   update(time: number, delta: number) {
@@ -126,16 +130,67 @@ class Game extends Phaser.Scene {
     //   }
     // }
 
-    this.player.checkCanPush(this.player.sgo.x, this.player.sgo.y, this.boulder.x, this.boulder.y);
+    // this.player.checkCanPush(this.player.sgo.x, this.player.sgo.y, this.boulder.x, this.boulder.y);
+    this.vases.forEach((item) => {
+      const distance = Phaser.Math.Distance.Between(this.player.leftArmHitBox.x, this.player.leftArmHitBox.y, item.x, item.y);
+
+      if (distance < 100) {
+        // this.
+      }
+    });
+  }
+
+  generateVases = () => {
+    const numVases = 10;
+    const vaseWidth = 50;
+    const vaseSpacing = 500;
+
+    const vases = [];
+
+    const totalWidth = vaseWidth * numVases + vaseSpacing * (numVases - 1);
+    // const totalWidth = this.vaseWidth * this.numVases + this.vaseSpacing * (this.numVases - 1);
+    const startX = this.player.sgo.x + 2500 - totalWidth / 2;
+    const vaseShape = this.scene.scene.cache.json.get("vase").vaza;
+
+    for (let i = 0; i < numVases; i++) {
+      const x = startX + i * (vaseWidth + vaseSpacing);
+      const vase = this.matter.add.image(x, 500, "vase", undefined, {
+        shape: vaseShape,
+        label: "vase",
+        // ignorePointer: i === 5 ? true : false,
+      });
+      vase.setScale(0.4);
+      vase.setCollisionCategory(10);
+      vase.setCollidesWith([1]);
+
+      vases.push(vase);
+    }
+
+    return vases;
+  };
+
+  handleCollision(event) {
+    const pairs = event.pairs;
+
+    for (let i = 0; i < pairs.length; i++) {
+      const bodyA = pairs[i].bodyA;
+      const bodyB = pairs[i].bodyB;
+      if (bodyB.label === "vase" || bodyA.label === "vase") {
+        // Обрабатываем коллизию игрока с вазой
+        console.log("Ваза разбита!");
+        // Здесь можно удалить вазу или сделать что-то другое
+      }
+    }
   }
 
   interpolate(vFrom, vTo, delta) {
     let interpolation = (1 - Math.cos(delta * Math.PI)) * 0.5;
     return vFrom * (1 - interpolation) + vTo * interpolation;
   }
+
   // method to generate the terrain. Arguments: the graphics object and the start position
   generateTerrain(graphics, mountainStart) {
-    // array to store slope points (точки наклона)
+    // array to store slope points
     let slopePoints = [];
 
     // variable to count the amount of slopes
@@ -156,12 +211,13 @@ class Game extends Phaser.Scene {
     // current horizontal point
     let pointX = 0;
 
-    let deltaY = Math.random() * 2 - 0.5;
+    let deltaY = Math.random() * 2;
 
     // while we have less slopes than regular slopes amount per mountain...
     while (slopes < gameOptions.slopesPerMountain) {
       // slope interpolation value
       let interpolationVal = this.interpolate(slopeStart.y, slopeEnd.y, (pointX - slopeStart.x) / (slopeEnd.x - slopeStart.x));
+      // console.log("interpolationVal: ", interpolationVal);
 
       // if current point is at the end of the slope...
       if (pointX == slopeEnd.x) {
@@ -171,9 +227,13 @@ class Game extends Phaser.Scene {
 
         // next slope start position
         slopeStart = new Phaser.Math.Vector2(pointX, slopeEnd.y);
-
         // next slope end position
-        slopeEnd = new Phaser.Math.Vector2(slopeEnd.x + Phaser.Math.Between(gameOptions.slopeLength[0], gameOptions.slopeLength[1]), Math.random());
+        slopeEnd = new Phaser.Math.Vector2(
+          slopeEnd.x + Phaser.Math.Between(gameOptions.slopeLength[0], gameOptions.slopeLength[1]),
+          slopeEnd.y - deltaY
+        );
+        // console.log("slopeStart: ", slopeStart);
+        // console.log("slopeEnd: ", slopeEnd);
 
         // no need to interpolate, we use slope start y value
         interpolationVal = slopeStart.y;
@@ -284,11 +344,11 @@ const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: "matter",
     matter: {
-      debug: true,
+      // debug: true,
       setBounds: {
         left: true,
         right: false,
-        top: true,
+        top: false,
         bottom: true,
       },
     },

@@ -4,26 +4,18 @@ export default class Boulder extends Phaser.Physics.Matter.Image {
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene.matter.world, x, y, texture, frame, {
       label: "boulder",
-      frictionAir: 0.006,
-      shape: scene.cache.json.get("boulder_shapes").boulder,
+      // frictionAir: 0.006,
+      // shape: scene.cache.json.get("boulder_shapes").boulder_gray,
     });
 
-    const shapes = this.scene.cache.json.get("boulder_shapes");
+    // this.setFriction(0.2, 0.009, 0.1);
 
-    // this.setScale(0.3);
-    // this.setCircle(178, {});
-    // old boulder
-    // this.setScale(0.15);
-    // this.setCircle(90, {});
-    // this.setCircle(170, {
-    //   shape: shapes.boulder,
-    // });
-    console.log(this);
-
-    // this.setBounce(0.1);
-    // this.setFriction(0.001, 0.005, 0);
-    // this.setDensity(1);
-    this.setFriction(1, 0.01, 10);
+    this.setCircle(170, {
+      friction: 0.1,
+      frictionAir: 0.009,
+      frictionStatic: 0.1,
+    });
+    this.setBounce(0.2);
 
     this.setDepth(100);
 
