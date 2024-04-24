@@ -1,10 +1,10 @@
 {
   "skeleton": {
-    "hash": "2SwXMkvP4hySmvDPig71Sp01B10",
+    "hash": "HUv3GTnT2sqM0NTS4NDJu5N58Kc",
     "spine": "3.8.55",
     "x": -112.85,
     "y": -0.73,
-    "width": 241.59,
+    "width": 239.76,
     "height": 349.34,
     "images": "C:/Users/rafae/OneDrive/Desktop/new-sizif/images/",
     "audio": "C:/Users/rafae/OneDrive/Desktop/new-sizif"
@@ -32,13 +32,12 @@
     { "name": "ik_noga_right", "parent": "root", "x": 43.49, "y": 39.83, "color": "ff3f00ff" },
     { "name": "ik_noga_left", "parent": "root", "x": -89.71, "y": 31.88, "color": "ff3f00ff" },
     { "name": "ik_ruka_r", "parent": "root", "rotation": 0.07, "x": -72.23, "y": 154.01, "color": "ff3f00ff" },
-    { "name": "ik_ruka_l", "parent": "root", "x": 97.98, "y": 221.01, "color": "ff3f00ff" }
+    { "name": "ik_ruka_l", "parent": "root", "x": 101.01, "y": 237.98, "color": "ff3f00ff" }
   ],
   "slots": [
     { "name": "Predplehye(2)", "bone": "root", "attachment": "Predplehye(2)" },
     { "name": "Pleho(2)", "bone": "root", "attachment": "Pleho(2)" },
     { "name": "Kisty(2)", "bone": "root", "attachment": "Kisty(2)" },
-    { "name": "Tors", "bone": "root", "attachment": "Tors" },
     { "name": "Ikra(2)", "bone": "root", "attachment": "Ikra(2)" },
     { "name": "Stopa(2)", "bone": "root", "attachment": "Stopa(2)" },
     { "name": "Nosok(2)", "bone": "root", "attachment": "Nosok(2)" },
@@ -47,6 +46,7 @@
     { "name": "Ikra", "bone": "root", "attachment": "Ikra" },
     { "name": "Nosok", "bone": "root", "attachment": "Nosok" },
     { "name": "Taz", "bone": "root", "attachment": "Taz" },
+    { "name": "Tors", "bone": "root", "attachment": "Tors" },
     { "name": "Bedro", "bone": "root", "attachment": "Bedro" },
     { "name": "Golova", "bone": "root", "attachment": "Golova" },
     { "name": "Predplehye", "bone": "root", "attachment": "Predplehye" },
