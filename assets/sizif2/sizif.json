@@ -1,10 +1,10 @@
 {
   "skeleton": {
-    "hash": "mLOco4iUnZtHFKfUUcEL0IftD9w",
+    "hash": "2SwXMkvP4hySmvDPig71Sp01B10",
     "spine": "3.8.55",
     "x": -112.85,
     "y": -0.73,
-    "width": 218.92,
+    "width": 241.59,
     "height": 349.34,
     "images": "C:/Users/rafae/OneDrive/Desktop/new-sizif/images/",
     "audio": "C:/Users/rafae/OneDrive/Desktop/new-sizif"
@@ -29,10 +29,10 @@
     { "name": "bone16", "parent": "bone15", "length": 75.76, "rotation": -90.06, "x": 63.48, "y": -0.29 },
     { "name": "bone17", "parent": "bone16", "length": 20.64, "rotation": -12.19, "x": 75.47, "y": 0.02, "transform": "noRotationOrReflection" },
     { "name": "bone18", "parent": "bone17", "length": 15.05, "rotation": 56.75, "x": 20.57, "y": -0.03 },
-    { "name": "ik_noga_right", "parent": "root", "x": 63.57, "y": 39.83, "color": "ff3f00ff" },
+    { "name": "ik_noga_right", "parent": "root", "x": 43.49, "y": 39.83, "color": "ff3f00ff" },
     { "name": "ik_noga_left", "parent": "root", "x": -89.71, "y": 31.88, "color": "ff3f00ff" },
-    { "name": "ik_ruka_r", "parent": "root", "rotation": 0.07, "x": 20.89, "y": 122.05, "color": "ff3f00ff" },
-    { "name": "ik_ruka_l", "parent": "root", "x": 27.68, "y": 138.84, "color": "ff3f00ff" }
+    { "name": "ik_ruka_r", "parent": "root", "rotation": 0.07, "x": -72.23, "y": 154.01, "color": "ff3f00ff" },
+    { "name": "ik_ruka_l", "parent": "root", "x": 97.98, "y": 221.01, "color": "ff3f00ff" }
   ],
   "slots": [
     { "name": "Predplehye(2)", "bone": "root", "attachment": "Predplehye(2)" },
@@ -48,10 +48,10 @@
     { "name": "Nosok", "bone": "root", "attachment": "Nosok" },
     { "name": "Taz", "bone": "root", "attachment": "Taz" },
     { "name": "Bedro", "bone": "root", "attachment": "Bedro" },
+    { "name": "Golova", "bone": "root", "attachment": "Golova" },
     { "name": "Predplehye", "bone": "root", "attachment": "Predplehye" },
     { "name": "Pleho", "bone": "root", "attachment": "Pleho" },
-    { "name": "Kisty", "bone": "root", "attachment": "Kisty" },
-    { "name": "Golova", "bone": "root", "attachment": "Golova" }
+    { "name": "Kisty", "bone": "root", "attachment": "Kisty" }
   ],
   "ik": [
     { "name": "ik_noga_left", "order": 1, "bones": ["bone11", "bone12"], "target": "ik_noga_left", "bendPositive": false },
