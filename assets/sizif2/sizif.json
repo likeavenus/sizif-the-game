@@ -1,6 +1,6 @@
 {
   "skeleton": {
-    "hash": "HUv3GTnT2sqM0NTS4NDJu5N58Kc",
+    "hash": "4PlbO8slqzuZrrt+30DgyUeGstc",
     "spine": "3.8.55",
     "x": -112.85,
     "y": -0.73,
@@ -533,7 +533,28 @@
         }
       }
     },
-    "idle": { "bones": { "bone17": { "rotate": [{ "angle": -27.4 }] }, "ik_noga_right": { "translate": [{ "x": -52.72, "y": -61.68 }] } } },
+    "idle": {
+      "bones": {
+        "bone17": { "rotate": [{ "angle": -40.5 }] },
+        "ik_noga_right": { "translate": [{ "x": -51.01, "y": -13.43 }] },
+        "ik_noga_left": { "translate": [{ "x": 102.91, "y": -10.54 }] },
+        "bone2": {
+          "rotate": [{ "angle": -3.82 }],
+          "translate": [
+            { "x": 8.75, "y": 8.8 },
+            { "time": 1.5, "x": 8.75, "y": 7.58 },
+            { "time": 3, "x": 8.75, "y": 8.8 }
+          ]
+        },
+        "bone13": { "rotate": [{ "angle": 16.2 }] },
+        "bone14": { "rotate": [{ "angle": 4.47 }] },
+        "ik_ruka_l": { "translate": [{ "x": -110.24, "y": -95.75 }] },
+        "ik_ruka_r": { "translate": [{ "x": 75.15, "y": -23.24 }] },
+        "bone10": { "rotate": [{ "angle": -42.92 }], "translate": [{ "x": 1.43, "y": 5.81 }] },
+        "bone7": { "rotate": [{ "angle": -36.28 }] },
+        "bone3": { "rotate": [{ "angle": 3.24 }] }
+      }
+    },
     "idle_left": {
       "bones": {
         "bone2": { "rotate": [{ "angle": -40 }], "translate": [{ "x": 7.15, "y": 2.44 }] },
