@@ -1,6 +1,6 @@
 {
   "skeleton": {
-    "hash": "4PlbO8slqzuZrrt+30DgyUeGstc",
+    "hash": "VpkCeVBogTzxcFm1I6Nfk3mqcT0",
     "spine": "3.8.55",
     "x": -112.85,
     "y": -0.73,
@@ -535,24 +535,27 @@
     },
     "idle": {
       "bones": {
-        "bone17": { "rotate": [{ "angle": -40.5 }] },
-        "ik_noga_right": { "translate": [{ "x": -51.01, "y": -13.43 }] },
-        "ik_noga_left": { "translate": [{ "x": 102.91, "y": -10.54 }] },
         "bone2": {
-          "rotate": [{ "angle": -3.82 }],
+          "rotate": [{ "angle": 2.06 }],
           "translate": [
             { "x": 8.75, "y": 8.8 },
-            { "time": 1.5, "x": 8.75, "y": 7.58 },
+            { "time": 1.5, "x": 8.75, "y": 7.25 },
             { "time": 3, "x": 8.75, "y": 8.8 }
           ]
         },
-        "bone13": { "rotate": [{ "angle": 16.2 }] },
-        "bone14": { "rotate": [{ "angle": 4.47 }] },
-        "ik_ruka_l": { "translate": [{ "x": -110.24, "y": -95.75 }] },
-        "ik_ruka_r": { "translate": [{ "x": 75.15, "y": -23.24 }] },
-        "bone10": { "rotate": [{ "angle": -42.92 }], "translate": [{ "x": 1.43, "y": 5.81 }] },
-        "bone7": { "rotate": [{ "angle": -36.28 }] },
-        "bone3": { "rotate": [{ "angle": 3.24 }] }
+        "bone5": { "rotate": [{ "angle": -20.11 }] },
+        "bone6": { "rotate": [{ "angle": 8.52 }] },
+        "bone8": { "rotate": [{ "angle": -109.27 }] },
+        "bone9": { "rotate": [{ "angle": -9.25 }] },
+        "bone11": { "rotate": [{ "angle": 14.76 }] },
+        "bone12": { "rotate": [{ "angle": 53.02 }] },
+        "bone13": { "rotate": [{ "angle": 18.62 }] },
+        "bone14": { "rotate": [{ "angle": 5.08 }] },
+        "bone15": { "rotate": [{ "angle": -67.08 }] },
+        "bone16": { "rotate": [{ "angle": 89.8 }] },
+        "bone17": { "rotate": [{ "angle": -39.46 }] },
+        "ik_noga_right": { "translate": [{ "x": -47.27, "y": -14.06 }] },
+        "ik_noga_left": { "translate": [{ "x": 86.27, "y": -11.5 }] }
       }
     },
     "idle_left": {
