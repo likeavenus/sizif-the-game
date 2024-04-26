@@ -1,0 +1,46 @@
+{
+  "frames": {
+    "Vulture_10.png": {
+      "frame": { "x": 0, "y": 0, "w": 800, "h": 600 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 800, "h": 600 },
+      "sourceSize": { "w": 800, "h": 600 }
+    },
+    "Vulture_11.png": {
+      "frame": { "x": 800, "y": 0, "w": 800, "h": 600 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 800, "h": 600 },
+      "sourceSize": { "w": 800, "h": 600 }
+    },
+    "Vulture_12.png": {
+      "frame": { "x": 0, "y": 600, "w": 800, "h": 600 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 800, "h": 600 },
+      "sourceSize": { "w": 800, "h": 600 }
+    },
+    "Vulture_13.png": {
+      "frame": { "x": 800, "y": 600, "w": 800, "h": 600 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 800, "h": 600 },
+      "sourceSize": { "w": 800, "h": 600 }
+    },
+    "Vulture_14.png": {
+      "frame": { "x": 0, "y": 1200, "w": 800, "h": 600 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 800, "h": 600 },
+      "sourceSize": { "w": 800, "h": 600 }
+    }
+  },
+  "meta": {
+    "app": "https://github.com/piskelapp/piskel/",
+    "version": "1.0",
+    "image": "Vulture_1.png",
+    "format": "RGBA8888",
+    "size": { "w": 1600, "h": 1800 }
+  }
+}

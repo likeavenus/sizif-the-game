@@ -1,0 +1,46 @@
+{
+  "frames": {
+    "Explosion_10.png": {
+      "frame": { "x": 0, "y": 0, "w": 130, "h": 660 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 130, "h": 660 },
+      "sourceSize": { "w": 130, "h": 660 }
+    },
+    "Explosion_11.png": {
+      "frame": { "x": 130, "y": 0, "w": 130, "h": 660 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 130, "h": 660 },
+      "sourceSize": { "w": 130, "h": 660 }
+    },
+    "Explosion_12.png": {
+      "frame": { "x": 260, "y": 0, "w": 130, "h": 660 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 130, "h": 660 },
+      "sourceSize": { "w": 130, "h": 660 }
+    },
+    "Explosion_13.png": {
+      "frame": { "x": 390, "y": 0, "w": 130, "h": 660 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 130, "h": 660 },
+      "sourceSize": { "w": 130, "h": 660 }
+    },
+    "Explosion_14.png": {
+      "frame": { "x": 520, "y": 0, "w": 130, "h": 660 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 130, "h": 660 },
+      "sourceSize": { "w": 130, "h": 660 }
+    }
+  },
+  "meta": {
+    "app": "https://github.com/piskelapp/piskel/",
+    "version": "1.0",
+    "image": "Explosion_1.png",
+    "format": "RGBA8888",
+    "size": { "w": 650, "h": 660 }
+  }
+}

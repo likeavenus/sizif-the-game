@@ -6,6 +6,12 @@ import "phaser/plugins/spine/dist/SpinePlugin";
 import "../containers/SpineContainer";
 import simplify from "simplify-js";
 import SpineContainer from "../containers/SpineContainer";
+import PhaserRaycaster from "phaser-raycaster";
+import { BONES, hello } from "./constants";
+import { Vulture } from "../containers/Vulture";
+import { InfoBoard } from "../containers/Info";
+import Menu from "./Menu";
+// import VultureContainer from "../containers/Vulture";
 
 let gameOptions = {
   // start vertical point of the terrain, 0 = very top; 1 = very bottom
@@ -34,6 +40,19 @@ class Game extends Phaser.Scene {
   emitter = new Phaser.Events.EventEmitter();
   music!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
   canPushBoulder = false;
+  vases!: Phaser.Physics.Matter.Image[];
+  canTakeVase = false;
+  lightningBolt!: Phaser.Physics.Matter.Sprite;
+  sizifSays!: Phaser.GameObjects.Text;
+  vaseHelperText!: Phaser.GameObjects.Text;
+  vulture!: Vulture;
+  board!: InfoBoard;
+  constraint!: Phaser.Physics.Matter.Factory;
+  info!: Phaser.Physics.Matter.Image;
+  infoHelperText!: Phaser.GameObjects.Text;
+  canReadInfo = false;
+  thunderSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  melody!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
   private backgrounds: {
     ratioX: number;
@@ -55,42 +74,90 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-    // const montain = this.add.rectangle(0, innerHeight, 5000, 20, 0xffffff);
-    // montain.setDepth(100);
-    // this.matter.add.gameObject(montain, {
-    //   isStatic: true,
-    //   angle: Phaser.Math.DegToRad(160),
-    // });
-    // const s = this.matter.add.image(600, 300, "s", undefined).setDepth(10);
+    this.vaseHelperText = this.add.text(0, 0, "drag vase");
+    this.vaseHelperText.setAlpha(0);
+    this.vaseHelperText.setDepth(130);
+    // this.vulture = new Vulture(this, Phaser.Math.Between(-1000, 1000), -600, "vulture", "vulture");
+    this.vulture = new Vulture(this, -100, -300, "vulture", "vulture");
 
     this.boulder = new Boulder(this, 600, 300, "boulder_gray", undefined);
-    // this.player = this.add.spineContainer(0, 100, "sizif", "animation", true);
+    this.info = this.matter.add.image(350, 542, "info", undefined);
+
+    this.info.setRectangle(150, 150, {
+      isStatic: true,
+      isSensor: true,
+    });
+    this.info.setDepth(100);
+    this.infoHelperText = this.add.text(this.info.x - 100, this.info.y - 80, "Press E to read info");
+    this.infoHelperText.setDepth(100);
+    this.infoHelperText.alpha = 0;
+
+    const eKey = this.input.keyboard?.addKey("E");
+    this.board = new InfoBoard(this, 200, 200, 500, 500, hello);
+
+    let toggler = false;
+    eKey?.on("down", () => {
+      if (this.canReadInfo) {
+        if (!toggler) {
+          this.board.setDepth(250);
+          toggler = true;
+        } else {
+          this.board.setDepth(-1);
+
+          toggler = false;
+        }
+      } else {
+        toggler = false;
+        this.board.setDepth(-1);
+      }
+    });
+
+    this.sizifSays = this.add.text(0, 0, "Holy sh#t!", {
+      fontSize: 24,
+    });
+    this.sizifSays.alpha = 0;
+    this.sizifSays.setDepth(110);
     this.player = this.add.spineContainer(0, 140, "sizif2", "idle", true);
 
     this.player.spine.setCollisionCategory(2);
     this.boulder.setCollisionCategory(4);
-    this.player.rightArmHitBox.setCollisionCategory(0);
+    // this.player.rightArmHitBox.setCollisionCategory(0);
     this.player.leftArmHitBox.setCollisionCategory(8);
+    this.vulture.setCollisionCategory(32);
 
-    // this.player.spine.setCollidesWith([4]);
-    this.boulder.setCollidesWith([8, 1]);
+    this.boulder.setCollidesWith([8, 32, 1]);
     // this.player.rightArmHitBox.setCollidesWith([2]);
     this.player.leftArmHitBox.setCollidesWith([4]);
+    this.vulture.setCollidesWith([4, 1, 10]);
 
     const { width, height } = this.scale;
+    this.add.tileSprite(0, 0, width, height, "sky_1").setOrigin(0, 0).setScrollFactor(0, 0);
 
     this.backgrounds.push(
       {
         ratioX: 0.07,
         ratioY: 0.009,
-        sprite: this.add.tileSprite(0, 0, width, height, "sky").setOrigin(0, 0).setScrollFactor(0, 0).setScale(3, 4),
-        // .setDepth(0),
+        sprite: this.add.tileSprite(0, 0, width, height, "sky").setOrigin(0, 0).setScrollFactor(0, 0).setDepth(1).setScale(1, 1),
       }
+      // {
+      //   ratioX: 0.07,
+      //   ratioY: 0.009,
+      //   sprite: this.add.tileSprite(0, 0, width, height, "sky_2").setOrigin(0, 0).setScrollFactor(0, 0).setDepth(1).setScale(1, 0.3),
+      // },
+      // {
+      //   ratioX: 0.07,
+      //   ratioY: 0.009,
+      //   sprite: this.add
+      //     .tileSprite(0, height / 2, width, height, "sky_3")
+      //     .setOrigin(0, 0.3)
+      //     .setScrollFactor(0, 0)
+      //     .setDepth(2)
+      //     .setScale(1, 0.3),
+      // },
       // {
       //   ratioX: 0.09,
       //   ratioY: 0.02,
-      //   sprite: this.add.tileSprite(0, 0, width, height, "mountains").setOrigin(0, 0).setScrollFactor(0, 0).setScale(4, 5),
-      //   // .setDepth(0),
+      //   sprite: this.add.tileSprite(0, height, width, height, "sky_4").setOrigin(0, 1).setScrollFactor(0, 0).setDepth(3).setScale(1, 0.3),
       // }
     );
 
@@ -99,7 +166,8 @@ class Game extends Phaser.Scene {
 
     const debugLayer = this.add.graphics();
 
-    this.cameras.main.startFollow(this.player.sgo);
+    this.cameras.main.startFollow(this.player.spine);
+    this.cameras.main.zoomTo(0.5);
 
     this.mountainGraphics = [];
     this.mountainStart = new Phaser.Math.Vector2(0, 0);
@@ -115,53 +183,321 @@ class Game extends Phaser.Scene {
     }
 
     this.vases = this.generateVases();
+    this.lightningBolt = this.matter.add.sprite(-2500, this.player.spine.y, "bolt", undefined, {
+      isStatic: true,
+      isSensor: true,
+    });
+    this.lightningBolt.alpha = 0;
+    this.lightningBolt.setDepth(103);
+
+    this.matter.world.on(
+      "collisionstart",
+      (e, bodyA, bodyB) => {
+        if (
+          (bodyA === this.player.spine.body && bodyB === this.lightningBolt.body) ||
+          (bodyA === this.lightningBolt.body && bodyB === this.player.spine.body)
+        ) {
+          this.playerGetDamage();
+        }
+
+        if (bodyA === this.vulture.body && bodyB === this.boulder.body) {
+          this.constraint = this.matter.add.constraint(this.vulture.body, this.boulder.body, 30, 0.05, {
+            pointA: { x: 0, y: 80 },
+            pointB: { x: 0, y: -150 },
+          });
+
+          this.vulture.setCollidesWith([1, 10]);
+          this.boulder.setCollidesWith([8, 1]);
+
+          this.vulture.withBoulder = true;
+        }
+
+        if (
+          (bodyA === this.vulture.body && bodyB?.gameObject?.body?.label === "vase") ||
+          (bodyA?.gameObject?.body?.label === "vase" && bodyB === this.vulture.body)
+        ) {
+          this.vulture.withBoulder = false;
+          this.vulture.canAttack = false;
+          // TODO: Destroy vases
+          // bodyB.gameObject.destroy(true);
+
+          if (this.constraint) {
+            console.log("remove");
+
+            this.matter.world.removeConstraint(this.constraint);
+          }
+        }
+
+        if ((bodyA === this.info.body && bodyB === this.player.spine.body) || (bodyA === this.player.spine.body && bodyB === this.info.body)) {
+          this.canReadInfo = true;
+          this.infoHelperText.alpha = 1;
+        }
+      },
+      this
+    );
+
+    this.matter.world.on("collisionend", (e, bodyA, bodyB) => {
+      if (bodyA === this.info.body && bodyB === this.player.spine.body) {
+        this.canReadInfo = false;
+        this.infoHelperText.alpha = 0;
+      }
+    });
+
+    this.anims.create({
+      key: "strike",
+      frames: this.anims.generateFrameNames("bolt", {
+        start: 10,
+        end: 14,
+        prefix: "Explosion_",
+        suffix: ".png",
+      }),
+      // repeat: -1,
+      frameRate: 14,
+      // hideOnComplete: true,
+      hideOnComplete: true,
+      showOnStart: true,
+    });
+
+    this.thunderSound = this.sound.add("thunder", { volume: 0.2 });
+    this.thunderSound.pause();
+
+    this.melody = this.sound.add("melody", {
+      volume: 0.4,
+    });
+    // this.melody.play();
+
     // this.matter.world.on("collisionstart", this.handleCollision, this);
+    this.time.addEvent({
+      delay: Phaser.Math.Between(1000, 8000),
+      callback: this.zeusAttack,
+      callbackScope: this,
+      loop: true,
+    });
+
+    // this.moveBirdToBall();
+
+    // end of create
+  }
+
+  playerGetDamage() {
+    this.player.leftArmHitBox.setCollidesWith([0]);
+
+    // lightning strike effect
+    const initColor = this.player.spine.skeleton.findSlot(BONES[0]).color;
+    // this.player.spine.play("bolt_damage");
+    BONES.forEach((name) => {
+      this.player.spine.skeleton.findSlot(name).color = { r: 255, g: 255, b: 255, a: 1 };
+      this.time.delayedCall(50, () => {
+        this.player.spine.skeleton.findSlot(name).color = { r: 0, g: 0, b: 0, a: 1 };
+      });
+      this.time.delayedCall(100, () => {
+        this.player.spine.skeleton.findSlot(name).color = { r: 255, g: 255, b: 255, a: 1 };
+        this.sizifSays.alpha = 1;
+        this.sizifSays.x = this.player.spine.x + 20;
+        this.sizifSays.y = this.player.spine.y;
+      });
+
+      this.time.delayedCall(150, () => {
+        this.player.spine.skeleton.findSlot(name).color = initColor;
+        // this.player.spine.play("idle");
+      });
+
+      this.time.delayedCall(2000, () => {
+        this.sizifSays.alpha = 0;
+      });
+
+      // this.player.canPushBoulder = false;
+    });
+
+    // this.matter.applyForce(this.player.spine.body, { x: -10, y: -10 });
+    // this.player.spine.setPosition(this.player.spine.x - 150, this.player.spine.y - 5);
+
+    this.time.delayedCall(2000, () => {
+      this.player.leftArmHitBox.setCollidesWith([4]);
+    });
   }
 
   update(time: number, delta: number) {
     this.boulder.update(this.cursors);
     this.player.update(this.cameras.main, this.cursors);
+    this.vulture.update(this.boulder);
 
-    // for (let i = 0; i < this.backgrounds.length; ++i) {
-    //   const bg = this.backgrounds[i];
-    //   if (bg.sprite) {
-    //     bg.sprite.tilePositionX = this.cameras.main.scrollX * bg.ratioX;
-    //     // bg.sprite.tilePositionY = this.cameras.main.scrollY * bg.ratioY;
-    //   }
+    // if (this.boulder.x + 100 < this.player.spine.x) {
+    //   // console.log("Boulder is falling!");
+    //   this.player.leftArmHitBox.setCollidesWith([]);
+    // } else {
+    //   this.player.leftArmHitBox.setCollidesWith([4]);
     // }
+
+    // if (Phaser.Math.Distance. )
+
+    for (let i = 0; i < this.backgrounds.length; ++i) {
+      const bg = this.backgrounds[i];
+      if (bg.sprite) {
+        bg.sprite.tilePositionX = this.cameras.main.scrollX * bg.ratioX;
+        // bg.sprite.tilePositionY = this.cameras.main.scrollY * bg.ratioY;
+      }
+    }
 
     // this.player.checkCanPush(this.player.sgo.x, this.player.sgo.y, this.boulder.x, this.boulder.y);
     this.vases.forEach((item) => {
       const distance = Phaser.Math.Distance.Between(this.player.leftArmHitBox.x, this.player.leftArmHitBox.y, item.x, item.y);
-
-      if (distance < 100) {
-        // this.
+      item.body.ignorePointer = distance > 100;
+      if (!item.body.ignorePointer) {
+        this.vaseHelperText.x = item.x;
+        this.vaseHelperText.y = item.y;
+        this.vaseHelperText.alpha = 1;
       }
     });
   }
 
-  generateVases = () => {
-    const numVases = 10;
+  zeusAttack() {
+    const playerOffset = 1500;
+
+    const mountainStartX = this.player.spine.x < 1500 ? 120 : 200;
+    const attackX = Phaser.Math.Between(this.player.spine.x - playerOffset, this.player.spine.x + playerOffset);
+    // const attackY = this.cameras.main.getWorldPoint(0, 500).y;
+    const attackY = this.cameras.main.getWorldPoint(0, this.lightningBolt.height / 2).y;
+    // this.lightningBolt.x < this.player.spine.x
+    //   ? this.player.spine.y - this.player.spine.height + mountainStartX
+    //   : this.player.spine.y - this.player.spine.height + 120;
+    // console.log("this.player.spine.x: ", this.player.spine.x);
+
+    const line = new Phaser.Geom.Line(attackX, this.player.spine.y - 1000, attackX, 0);
+    const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x000fffa } });
+
+    this.tweens.add({
+      targets: line,
+      y2: attackY,
+      duration: 1000,
+      repeat: 0,
+      ease: "ease.in",
+      onUpdate: () => {
+        graphics.strokeLineShape(line);
+      },
+      onComplete: () => {
+        this.thunderSound.play();
+        graphics.destroy(true);
+        this.lightningBolt.alpha = 1;
+        // this.lightningBolt.x = this.player.spine.x + 400;
+        this.lightningBolt.x = attackX;
+        this.lightningBolt.y = this.cameras.main.getWorldPoint(0, this.lightningBolt.height / 2).y;
+        this.thunderSound.setDetune(Phaser.Math.Between(-500, 1000));
+        this.thunderSound.play();
+
+        this.lightningBolt.anims.play("strike", false);
+        this.lightningBolt.on("animationcomplete", () => {
+          this.lightningBolt.alpha = 0;
+          this.lightningBolt.y = this.player.spine.y - 1900;
+        });
+      },
+    });
+  }
+
+  moveBirdToBall = () => {
+    this.boulder.setPosition(this.boulder.x, this.boulder.y + 10);
+    this.boulder.setCollidesWith([8, 32, 1]);
+    this.vulture.setCollidesWith([4, 10, 1]);
+
+    if (this.constraint) {
+      this.matter.world.removeConstraint(this.constraint);
+    }
+
+    const ballX = this.boulder.x;
+    const ballY = this.boulder.y;
+    this.tweens.add({
+      targets: this.vulture,
+      x: ballX,
+      y: ballY,
+      duration: Phaser.Math.Between(2000, 4000), // Время перемещения (2 секунды)
+      onUpdate: () => {
+        if (!this.vulture.canAttack) {
+        }
+      },
+      onComplete: () => {
+        this.time.delayedCall(Phaser.Math.Between(10000, 20000), this.moveBirdToBall);
+        // После завершения перемещения, можно добавить проверку коллизии, например:
+        // if (this.matter.overlap(this.bird, this.ball)) {
+        //   console.log('Коллизия!');
+        // }
+      },
+    });
+    // if (this.vulture.canAttack) {
+    //   // Получаем координаты шара
+    //   const ballX = this.boulder.x;
+    //   const ballY = this.boulder.y;
+
+    //   // Перемещаем птицу к координатам шара
+    //   this.tweens.add({
+    //     targets: this.vulture,
+    //     x: ballX,
+    //     y: ballY,
+    //     duration: 2000, // Время перемещения (2 секунды)
+    //     onUpdate: () => {
+    //       console.log(this.vulture.canAttack);
+    //     },
+    //     onComplete: () => {
+    //       // После завершения перемещения, можно добавить проверку коллизии, например:
+    //       // if (this.matter.overlap(this.bird, this.ball)) {
+    //       //   console.log('Коллизия!');
+    //       // }
+    //     },
+    //   });
+    // }
+  };
+
+  generateVases = (numVases: number = 30): Phaser.Physics.Matter.Image[] => {
     const vaseWidth = 50;
     const vaseSpacing = 500;
 
-    const vases = [];
+    const vases: Phaser.Physics.Matter.Image[] = [];
 
     const totalWidth = vaseWidth * numVases + vaseSpacing * (numVases - 1);
     // const totalWidth = this.vaseWidth * this.numVases + this.vaseSpacing * (this.numVases - 1);
-    const startX = this.player.sgo.x + 2500 - totalWidth / 2;
     const vaseShape = this.scene.scene.cache.json.get("vase").vaza;
+
+    const startX = 0;
 
     for (let i = 0; i < numVases; i++) {
       const x = startX + i * (vaseWidth + vaseSpacing);
-      const vase = this.matter.add.image(x, 500, "vase", undefined, {
+      const vase = this.matter.add.image(x, -i * 200, "vase", undefined, {
         shape: vaseShape,
         label: "vase",
-        // ignorePointer: i === 5 ? true : false,
+        ignorePointer: true,
       });
       vase.setScale(0.4);
       vase.setCollisionCategory(10);
-      vase.setCollidesWith([1]);
+      vase.setCollidesWith([1, 32]);
+      vase.setDepth(101);
+
+      // vase.setInteractive();
+
+      // vase.preFX.setPadding(32);
+      // let fx;
+      // vase
+      //   .on("pointerover", () => {
+      //     if (Phaser.Math.Distance.Between(this.player.spine.x, this.player.spine.y, vase.x, vase.y) < 160) {
+      //       if (!fx) {
+      //         fx = vase.postFX.addGlow();
+      //       }
+
+      //       this.tweens.add({
+      //         targets: fx,
+      //         outerStrength: 5,
+      //         loop: -1,
+      //         ease: "ease.in",
+      //       });
+      //     }
+      //   })
+      //   .on("pointerout", () => {
+      //     if (fx) {
+      //       this.tweens.add({
+      //         targets: fx,
+      //         outerStrength: -1,
+      //         ease: "linear",
+      //       });
+      //     }
+      //   });
 
       vases.push(vase);
     }
@@ -169,19 +505,19 @@ class Game extends Phaser.Scene {
     return vases;
   };
 
-  handleCollision(event) {
-    const pairs = event.pairs;
+  // handleCollision(event) {
+  //   const pairs = event.pairs;
 
-    for (let i = 0; i < pairs.length; i++) {
-      const bodyA = pairs[i].bodyA;
-      const bodyB = pairs[i].bodyB;
-      if (bodyB.label === "vase" || bodyA.label === "vase") {
-        // Обрабатываем коллизию игрока с вазой
-        console.log("Ваза разбита!");
-        // Здесь можно удалить вазу или сделать что-то другое
-      }
-    }
-  }
+  //   for (let i = 0; i < pairs.length; i++) {
+  //     const bodyA = pairs[i].bodyA;
+  //     const bodyB = pairs[i].bodyB;
+  //     if (bodyB.label === "vase" || bodyA.label === "vase") {
+  //       // Обрабатываем коллизию игрока с вазой
+  //       console.log("Ваза разбита!");
+  //       // Здесь можно удалить вазу или сделать что-то другое
+  //     }
+  //   }
+  // }
 
   interpolate(vFrom, vTo, delta) {
     let interpolation = (1 - Math.cos(delta * Math.PI)) * 0.5;
@@ -205,13 +541,13 @@ class Game extends Phaser.Scene {
     // determine slope end point, with an exception if this is the first slope of the fist mountain: we want it to be flat
     let slopeEnd =
       mountainStart.x == 0
-        ? new Phaser.Math.Vector2(slopeStart.x + gameOptions.slopeLength[1] * 1.5, 0)
+        ? new Phaser.Math.Vector2(slopeStart.x + gameOptions.slopeLength[1], 0)
         : new Phaser.Math.Vector2(slopeStart.x + slopeLength, Math.random());
 
     // current horizontal point
     let pointX = 0;
 
-    let deltaY = Math.random() * 2;
+    let deltaY = 2.5;
 
     // while we have less slopes than regular slopes amount per mountain...
     while (slopes < gameOptions.slopesPerMountain) {
@@ -223,7 +559,6 @@ class Game extends Phaser.Scene {
       if (pointX == slopeEnd.x) {
         // increase slopes amount
         slopes++;
-        // slopeEnd.y -= deltaY;
 
         // next slope start position
         slopeStart = new Phaser.Math.Vector2(pointX, slopeEnd.y);
@@ -276,6 +611,7 @@ class Game extends Phaser.Scene {
       graphics.lineTo(point.x, point.y);
     });
     graphics.strokePath();
+    graphics.setDepth(5);
 
     // loop through all simpleSlope points starting from the second
     for (let i = 1; i < simpleSlope.length; i++) {
@@ -353,10 +689,17 @@ const config: Phaser.Types.Core.GameConfig = {
       },
     },
   },
-  // scene: [Intro, Preloader, Game],
+  // scene: [Intro, Menu, Preloader, Game],
   scene: [Preloader, Game],
   plugins: {
-    scene: [{ key: "SpinePlugin", plugin: window.SpinePlugin, mapping: "spine" }],
+    scene: [
+      { key: "SpinePlugin", plugin: window.SpinePlugin, mapping: "spine" },
+      // {
+      //   key: "PhaserRaycaster",
+      //   plugin: PhaserRaycaster,
+      //   mapping: "raycasterPlugin",
+      // },
+    ],
   },
 };
 

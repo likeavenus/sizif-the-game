@@ -12,8 +12,9 @@ export default class Boulder extends Phaser.Physics.Matter.Image {
 
     this.setCircle(170, {
       friction: 0.1,
-      frictionAir: 0.009,
-      frictionStatic: 0.1,
+      frictionAir: 0.09,
+      frictionStatic: 8.1,
+      ignorePointer: true,
     });
     this.setBounce(0.2);
 

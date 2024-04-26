@@ -7,6 +7,7 @@ export default class Intro extends Phaser.Scene {
 
   preload() {
     this.load.image("phaser-logo", "assets/phaser-logo.png");
+    this.load.image("cover", "assets/menu/cover.png");
   }
 
   create() {
@@ -35,7 +36,7 @@ export default class Intro extends Phaser.Scene {
           duration: 800,
           delay: 2200,
           onComplete: () => {
-            this.scene.start("preloader");
+            this.scene.start("Menu");
           },
         });
       },
