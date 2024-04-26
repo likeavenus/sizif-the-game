@@ -1,6 +1,6 @@
 {
   "skeleton": {
-    "hash": "KRvjwAUC71OKSuAPaRVnduwgims",
+    "hash": "2ymT9d8P+iJ/Ys5QVG4x4tWSSDs",
     "spine": "3.8.55",
     "x": -112.85,
     "y": -0.73,
@@ -630,7 +630,7 @@
         "bone14": { "rotate": [{ "angle": 9.84 }] },
         "bone15": { "rotate": [{ "angle": 29.06 }] },
         "bone16": { "rotate": [{ "angle": 65.29 }] },
-        "bone17": { "rotate": [{ "angle": -1.67 }] },
+        "bone17": { "rotate": [{ "angle": -21.89 }] },
         "bone18": { "rotate": [{ "angle": 1.86 }] },
         "ik_noga_right": { "translate": [{ "x": 15.43, "y": -1.83 }] },
         "ik_noga_left": { "translate": [{ "x": -16.83, "y": 1.08 }] },
@@ -712,7 +712,7 @@
           "translate": [{ "x": 7.15, "y": 2.44 }]
         },
         "bone5": { "rotate": [{ "angle": 73.05 }, { "time": 1.5, "angle": -34.16 }, { "time": 3, "angle": 73.04 }] },
-        "bone17": { "rotate": [{ "angle": -1.67 }, { "time": 1.5, "angle": -43.3 }, { "time": 3, "angle": -70.59 }] },
+        "bone17": { "rotate": [{ "angle": -19.8 }, { "time": 1.5, "angle": -43.3 }, { "time": 3, "angle": -70.59 }] },
         "bone12": { "rotate": [{ "angle": 55.93 }, { "time": 1.5, "angle": 50.03 }, { "time": 3, "angle": 34.67 }] },
         "bone15": { "rotate": [{ "angle": 29.06 }, { "time": 1.5, "angle": -11.34 }, { "time": 3, "angle": -62.99 }] },
         "bone14": { "rotate": [{ "angle": 9.84 }, { "time": 1.5, "angle": 26.49 }, { "time": 3, "angle": 18.86 }] },
@@ -786,7 +786,7 @@
         "bone13": { "rotate": [{ "angle": 34.76 }, { "time": 1.5, "angle": 17.13 }, { "time": 3, "angle": -10.25 }] },
         "bone6": { "rotate": [{ "angle": -53.36 }, { "time": 1.5, "angle": 57.37 }, { "time": 3, "angle": -53.36 }] },
         "bone10": { "rotate": [{ "angle": -8.63 }] },
-        "bone17": { "rotate": [{ "angle": -70.59 }, { "time": 1.5, "angle": -95.54 }, { "time": 3, "angle": -1.67 }] },
+        "bone17": { "rotate": [{ "angle": -70.59 }, { "time": 1.5, "angle": -95.54 }, { "time": 3, "angle": -21.89 }] },
         "bone8": { "rotate": [{ "angle": 92.73 }, { "time": 1.5, "angle": -11.28 }, { "time": 3, "angle": 92.76 }] },
         "bone2": {
           "rotate": [{ "angle": -40 }, { "time": 1.5, "angle": -12.62 }, { "time": 3, "angle": -40 }],
