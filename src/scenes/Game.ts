@@ -77,8 +77,8 @@ class Game extends Phaser.Scene {
     this.vaseHelperText = this.add.text(0, 0, "drag vase");
     this.vaseHelperText.setAlpha(0);
     this.vaseHelperText.setDepth(130);
-    // this.vulture = new Vulture(this, Phaser.Math.Between(-1000, 1000), -600, "vulture", "vulture");
-    this.vulture = new Vulture(this, -100, -300, "vulture", "vulture");
+    this.vulture = new Vulture(this, Phaser.Math.Between(-1000, 1000), -500, "vulture", "vulture");
+    // this.vulture = new Vulture(this, -100, -300, "vulture", "vulture");
 
     this.boulder = new Boulder(this, 600, 300, "boulder_gray", undefined);
     this.info = this.matter.add.image(350, 542, "info", undefined);
@@ -167,7 +167,7 @@ class Game extends Phaser.Scene {
     const debugLayer = this.add.graphics();
 
     this.cameras.main.startFollow(this.player.spine);
-    this.cameras.main.zoomTo(0.5);
+    // this.cameras.main.zoomTo(0.5);
 
     this.mountainGraphics = [];
     this.mountainStart = new Phaser.Math.Vector2(0, 0);
@@ -274,7 +274,7 @@ class Game extends Phaser.Scene {
       loop: true,
     });
 
-    // this.moveBirdToBall();
+    this.moveBirdToBall();
 
     // end of create
   }
