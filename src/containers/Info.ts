@@ -6,7 +6,14 @@ export class InfoBoard extends Phaser.GameObjects.Container {
   private boardText: Phaser.GameObjects.Text;
   board!: Phaser.GameObjects.Image;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, text: string) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    text: string
+  ) {
     super(scene, x, y);
 
     this.board = new Phaser.GameObjects.Image(scene, 0, 0, "board");
@@ -16,8 +23,10 @@ export class InfoBoard extends Phaser.GameObjects.Container {
     this.setSize(width, height);
 
     // this.boardText.setPosition(this.width / 2 - width + 16, this.height / 2 - this.height + 16);
-    const screenCenterX = this.scene.cameras.main.worldView.x + this.scene.cameras.main.width / 2;
-    const screenCenterY = this.scene.cameras.main.worldView.y + this.scene.cameras.main.height / 2;
+    const screenCenterX =
+      this.scene.cameras.main.worldView.x + this.scene.cameras.main.width / 2;
+    const screenCenterY =
+      this.scene.cameras.main.worldView.y + this.scene.cameras.main.height / 2;
     this.boardText = new Phaser.GameObjects.Text(scene, 0, 0, text, {
       wordWrap: { width: width - 16 },
       fontSize: 22,
@@ -26,7 +35,10 @@ export class InfoBoard extends Phaser.GameObjects.Container {
 
     this.setDepth(-1);
     this.setPosition(screenCenterX, screenCenterY);
-    this.boardText.setPosition(this.boardText.x - this.boardText.width / 2, this.boardText.y - this.boardText.height / 2);
+    this.boardText.setPosition(
+      this.boardText.x - this.boardText.width / 2,
+      this.boardText.y - this.boardText.height / 2
+    );
 
     scene.add.existing(this);
 

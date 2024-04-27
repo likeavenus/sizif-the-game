@@ -5,7 +5,14 @@ export class Vulture extends Phaser.Physics.Matter.Sprite {
   withBoulder = false;
   canAttack = true;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, name: string, frame?: string | number) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    name: string,
+    frame?: string | number
+  ) {
     super(scene.matter.world, x, y, texture, frame, {
       label: "vulture",
       frictionAir: 0.006,
@@ -27,7 +34,7 @@ export class Vulture extends Phaser.Physics.Matter.Sprite {
     this.setScale(0.6);
     this.setRectangle(312, 160, {
       ignoreGravity: true,
-      ignorePointer: false,
+      ignorePointer: true,
     });
     this.setFixedRotation();
     this.setOrigin(0.45, 0.37);
