@@ -5,17 +5,9 @@ export class Vulture extends Phaser.Physics.Matter.Sprite {
   withBoulder = false;
   canAttack = true;
 
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    texture: string,
-    name: string,
-    frame?: string | number
-  ) {
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, name: string, frame?: string | number) {
     super(scene.matter.world, x, y, texture, frame, {
       label: "vulture",
-      frictionAir: 0.006,
     });
 
     scene.anims.create({
@@ -30,14 +22,17 @@ export class Vulture extends Phaser.Physics.Matter.Sprite {
       frameRate: 12,
     });
 
+    const renderTexture = new Phaser.GameObjects.RenderTexture(scene, 200, 200, 200, 200);
+    renderTexture.setTexture("boulder");
+
     this.setDepth(110);
     this.setScale(0.6);
-    this.setRectangle(312, 160, {
+    this.setRectangle(190, 65, {
       ignoreGravity: true,
-      ignorePointer: true,
+      // ignorePointer: true,
     });
     this.setFixedRotation();
-    this.setOrigin(0.45, 0.37);
+    this.setOrigin(0.5, 0.4);
     this.anims.play("fly");
     this.setInteractive();
 
@@ -45,11 +40,11 @@ export class Vulture extends Phaser.Physics.Matter.Sprite {
   }
 
   update(boulder: Boulder): void {
-    if (this.withBoulder) {
-      this.setVelocityY(-2);
-    } else {
-      // this.setRandomPosition()
-    }
+    // if (this.withBoulder) {
+    //   this.setVelocityY(-2);
+    // } else {
+    //   // this.setRandomPosition()
+    // }
   }
 }
 

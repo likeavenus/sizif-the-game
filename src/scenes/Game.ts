@@ -7,11 +7,10 @@ import "../containers/SpineContainer";
 import simplify from "simplify-js";
 import SpineContainer from "../containers/SpineContainer";
 import PhaserRaycaster from "phaser-raycaster";
-import { BONES, hello } from "./constants";
+import { BONES, COLLISION_CATEGORIES, hello } from "./constants";
 import { Vulture } from "../containers/Vulture";
 import { InfoBoard } from "../containers/Info";
 import Menu from "./Menu";
-// import VultureContainer from "../containers/Vulture";
 
 let gameOptions = {
   // start vertical point of the terrain, 0 = very top; 1 = very bottom
@@ -32,16 +31,12 @@ let gameOptions = {
 
 class Game extends Phaser.Scene {
   cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
-  // player!: ISpineContainer;
   player!: SpineContainer;
   boulder!: Boulder;
   isTouchingGround = false;
   level: number = 1;
   emitter = new Phaser.Events.EventEmitter();
-  music!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound;
+  music!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
   canPushBoulder = false;
   vases!: Phaser.Physics.Matter.Image[];
   canTakeVase = false;
@@ -54,14 +49,8 @@ class Game extends Phaser.Scene {
   info!: Phaser.Physics.Matter.Image;
   infoHelperText!: Phaser.GameObjects.Text;
   canReadInfo = false;
-  thunderSound!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound;
-  melody!:
-    | Phaser.Sound.NoAudioSound
-    | Phaser.Sound.HTML5AudioSound
-    | Phaser.Sound.WebAudioSound;
+  thunderSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  melody!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
   private backgrounds: {
     ratioX: number;
@@ -93,7 +82,8 @@ class Game extends Phaser.Scene {
     //   "vulture",
     //   "vulture"
     // );
-    this.vulture = new Vulture(this, -100, -300, "vulture", "vulture");
+    this.vulture = new Vulture(this, -100, 50, "vulture", "vulture");
+    // this.vulture = new Vulture(this, -100, -300, "vulture", "vulture");
 
     this.boulder = new Boulder(this, 600, 300, "boulder_gray", undefined);
     this.info = this.matter.add.image(350, 542, "info", undefined);
@@ -103,11 +93,7 @@ class Game extends Phaser.Scene {
       isSensor: true,
     });
     this.info.setDepth(100);
-    this.infoHelperText = this.add.text(
-      this.info.x - 100,
-      this.info.y - 80,
-      "Press E to read info"
-    );
+    this.infoHelperText = this.add.text(this.info.x - 100, this.info.y - 80, "Press E to read info");
     this.infoHelperText.setDepth(100);
     this.infoHelperText.alpha = 0;
 
@@ -137,66 +123,37 @@ class Game extends Phaser.Scene {
 
     this.sizifSays.alpha = 0;
     this.sizifSays.setDepth(110);
-    this.player = this.add.spineContainer(0, 140, "sizif2", "idle", true);
+    this.player = this.add.spineContainer(0, 130, "sizif2", "idle", true);
 
-    this.player.spine.setCollisionCategory(2);
-    this.boulder.setCollisionCategory(4);
-    this.player.rightArmHitBox.setCollisionCategory(0);
-    this.player.leftArmHitBox.setCollisionCategory(8);
-    this.vulture.setCollisionCategory(16);
+    this.player.spine.setCollisionCategory(COLLISION_CATEGORIES.Player);
+    this.boulder.setCollisionCategory(COLLISION_CATEGORIES.Boulder);
+    this.player.rightArmHitBox.setCollisionCategory(COLLISION_CATEGORIES.Disabled);
+    this.player.leftArmHitBox.setCollisionCategory(COLLISION_CATEGORIES.LeftArm);
+    this.vulture.setCollisionCategory(COLLISION_CATEGORIES.Vulture);
 
-    this.boulder.setCollidesWith([1, 8, 16]);
-    this.player.rightArmHitBox.setCollidesWith([0]);
-    this.player.leftArmHitBox.setCollidesWith([4]);
-    this.vulture.setCollidesWith([1, 4, 32]);
+    this.boulder.setCollidesWith([COLLISION_CATEGORIES.Ground, COLLISION_CATEGORIES.LeftArm, COLLISION_CATEGORIES.Vulture]);
+    this.player.rightArmHitBox.setCollidesWith([COLLISION_CATEGORIES.Disabled]);
+    this.player.leftArmHitBox.setCollidesWith([COLLISION_CATEGORIES.Boulder]);
+    this.vulture.setCollidesWith([COLLISION_CATEGORIES.Boulder, COLLISION_CATEGORIES.Vases]);
 
     const { width, height } = this.scale;
-    this.add
-      .tileSprite(0, 0, width, height, "sky_1")
-      .setOrigin(0, 0)
-      .setScrollFactor(0, 0);
+    this.add.tileSprite(0, 0, width, height, "sky_1").setOrigin(0, 0).setScrollFactor(0, 0);
 
-    this.backgrounds.push(
-      {
-        ratioX: 0.07,
-        ratioY: 0.009,
-        sprite: this.add
-          .tileSprite(0, 0, width, height, "sky")
-          .setOrigin(0, 0)
-          .setScrollFactor(0, 0)
-          .setDepth(1)
-          .setScale(1, 1),
-      }
-      // {
-      //   ratioX: 0.07,
-      //   ratioY: 0.009,
-      //   sprite: this.add.tileSprite(0, 0, width, height, "sky_2").setOrigin(0, 0).setScrollFactor(0, 0).setDepth(1).setScale(1, 0.3),
-      // },
-      // {
-      //   ratioX: 0.07,
-      //   ratioY: 0.009,
-      //   sprite: this.add
-      //     .tileSprite(0, height / 2, width, height, "sky_3")
-      //     .setOrigin(0, 0.3)
-      //     .setScrollFactor(0, 0)
-      //     .setDepth(2)
-      //     .setScale(1, 0.3),
-      // },
-      // {
-      //   ratioX: 0.09,
-      //   ratioY: 0.02,
-      //   sprite: this.add.tileSprite(0, height, width, height, "sky_4").setOrigin(0, 1).setScrollFactor(0, 0).setDepth(3).setScale(1, 0.3),
-      // }
-    );
+    this.backgrounds.push({
+      ratioX: 0.07,
+      ratioY: 0.009,
+      sprite: this.add.tileSprite(0, 0, width, height, "sky").setOrigin(0, 0).setScrollFactor(0, 0).setDepth(1).setScale(1, 1),
+    });
 
     this.matter.add.mouseSpring();
-    // this.boulder.enableDra
 
-    const debugLayer = this.add.graphics();
+    // const debugLayer = this.add.graphics();
 
     this.cameras.main.startFollow(this.player.spine);
-    this.cameras.main.setFollowOffset(undefined, 20);
+    // this.cameras.main.startFollow(this.vulture);
     // this.cameras.main.zoomTo(0.5);
+
+    this.cameras.main.setFollowOffset(undefined, 20);
 
     this.mountainGraphics = [];
     this.mountainStart = new Phaser.Math.Vector2(0, 0);
@@ -208,23 +165,14 @@ class Game extends Phaser.Scene {
       this.mountainGraphics[i] = this.add.graphics();
 
       // generateTerrain is the method to generate the terrain. The arguments are the graphics object and the start position
-      this.mountainStart = this.generateTerrain(
-        this.mountainGraphics[i],
-        this.mountainStart
-      );
+      this.mountainStart = this.generateTerrain(this.mountainGraphics[i], this.mountainStart);
     }
 
     this.vases = this.generateVases();
-    this.lightningBolt = this.matter.add.sprite(
-      -2500,
-      this.player.spine.y,
-      "bolt",
-      undefined,
-      {
-        isStatic: true,
-        isSensor: true,
-      }
-    );
+    this.lightningBolt = this.matter.add.sprite(-2500, this.player.spine.y, "bolt", undefined, {
+      isStatic: true,
+      isSensor: true,
+    });
     this.lightningBolt.alpha = 0;
     this.lightningBolt.setDepth(103);
 
@@ -232,37 +180,27 @@ class Game extends Phaser.Scene {
       "collisionstart",
       (e, bodyA, bodyB) => {
         if (
-          (bodyA === this.player.spine.body &&
-            bodyB === this.lightningBolt.body) ||
-          (bodyA === this.lightningBolt.body &&
-            bodyB === this.player.spine.body)
+          (bodyA === this.player.spine.body && bodyB === this.lightningBolt.body) ||
+          (bodyA === this.lightningBolt.body && bodyB === this.player.spine.body)
         ) {
           this.playerGetDamage();
         }
 
-        if (bodyA === this.vulture.body && bodyB === this.boulder.body) {
-          this.constraint = this.matter.add.constraint(
-            this.vulture.body,
-            this.boulder.body,
-            30,
-            0.05,
-            {
-              pointA: { x: 0, y: 80 },
-              pointB: { x: 0, y: -150 },
-            }
-          );
+        if ((bodyA === this.vulture.body && bodyB === this.boulder.body) || (bodyA === this.boulder.body && bodyB === this.vulture.body)) {
+          this.constraint = this.matter.add.constraint(this.vulture.body, this.boulder.body, 9, 0.1, {
+            pointA: { x: 0, y: 12 },
+            pointB: { x: 0, y: -175 },
+          });
 
-          this.vulture.setCollidesWith([1, 10, 32]);
-          this.boulder.setCollidesWith([8, 1]);
+          this.vulture.setCollidesWith([COLLISION_CATEGORIES.Vases]);
+          this.boulder.setCollidesWith([COLLISION_CATEGORIES.LeftArm, COLLISION_CATEGORIES.Ground]);
 
           this.vulture.withBoulder = true;
         }
 
         if (
-          (bodyA === this.vulture.body &&
-            bodyB?.gameObject?.body?.label === "vase") ||
-          (bodyA?.gameObject?.body?.label === "vase" &&
-            bodyB === this.vulture.body)
+          (bodyA === this.vulture.body && bodyB?.gameObject?.body?.label === "vase") ||
+          (bodyA?.gameObject?.body?.label === "vase" && bodyB === this.vulture.body)
         ) {
           this.vulture.withBoulder = false;
           this.vulture.canAttack = false;
@@ -274,10 +212,7 @@ class Game extends Phaser.Scene {
           }
         }
 
-        if (
-          (bodyA === this.info.body && bodyB === this.player.spine.body) ||
-          (bodyA === this.player.spine.body && bodyB === this.info.body)
-        ) {
+        if ((bodyA === this.info.body && bodyB === this.player.spine.body) || (bodyA === this.player.spine.body && bodyB === this.info.body)) {
           this.canReadInfo = true;
           this.infoHelperText.alpha = 1;
         }
@@ -324,13 +259,14 @@ class Game extends Phaser.Scene {
     });
 
     this.moveBirdToBall();
+
     // end of create
   }
 
   playerGetDamage() {
-    this.player.leftArmHitBox.setCollidesWith([0]);
+    this.player.leftArmHitBox.setCollidesWith([COLLISION_CATEGORIES.Disabled]);
 
-    // lightning strike effect
+    // lightning damage effect
     const initColor = this.player.spine.skeleton.findSlot(BONES[0]).color;
     // this.player.spine.play("bolt_damage");
     BONES.forEach((name) => {
@@ -362,21 +298,17 @@ class Game extends Phaser.Scene {
 
       this.time.delayedCall(150, () => {
         this.player.spine.skeleton.findSlot(name).color = initColor;
-        // this.player.spine.play("idle");
       });
 
       this.time.delayedCall(2000, () => {
         this.sizifSays.alpha = 0;
       });
-
-      // this.player.canPushBoulder = false;
     });
 
     // this.matter.applyForce(this.player.spine.body, { x: -10, y: -10 });
-    // this.player.spine.setPosition(this.player.spine.x - 150, this.player.spine.y - 5);
 
     this.time.delayedCall(2000, () => {
-      this.player.leftArmHitBox.setCollidesWith([4]);
+      this.player.leftArmHitBox.setCollidesWith([COLLISION_CATEGORIES.Boulder]);
     });
   }
 
@@ -404,12 +336,7 @@ class Game extends Phaser.Scene {
 
     // this.player.checkCanPush(this.player.sgo.x, this.player.sgo.y, this.boulder.x, this.boulder.y);
     this.vases.forEach((item) => {
-      const distance = Phaser.Math.Distance.Between(
-        this.player.leftArmHitBox.x,
-        this.player.leftArmHitBox.y,
-        item.x,
-        item.y
-      );
+      const distance = Phaser.Math.Distance.Between(this.player.leftArmHitBox.x, this.player.leftArmHitBox.y, item.x, item.y);
       item.body.ignorePointer = distance > 100;
       if (!item.body.ignorePointer) {
         this.vaseHelperText.x = item.x;
@@ -423,26 +350,15 @@ class Game extends Phaser.Scene {
     const playerOffset = 1500;
 
     const mountainStartX = this.player.spine.x < 1500 ? 120 : 200;
-    const attackX = Phaser.Math.Between(
-      this.player.spine.x - playerOffset,
-      this.player.spine.x + playerOffset
-    );
+    const attackX = Phaser.Math.Between(this.player.spine.x - playerOffset, this.player.spine.x + playerOffset);
     // const attackY = this.cameras.main.getWorldPoint(0, 500).y;
-    const attackY = this.cameras.main.getWorldPoint(
-      0,
-      this.lightningBolt.height / 2
-    ).y;
+    const attackY = this.cameras.main.getWorldPoint(0, this.lightningBolt.height / 2).y;
     // this.lightningBolt.x < this.player.spine.x
     //   ? this.player.spine.y - this.player.spine.height + mountainStartX
     //   : this.player.spine.y - this.player.spine.height + 120;
     // console.log("this.player.spine.x: ", this.player.spine.x);
 
-    const line = new Phaser.Geom.Line(
-      attackX,
-      this.player.spine.y - 1000,
-      attackX,
-      0
-    );
+    const line = new Phaser.Geom.Line(attackX, this.player.spine.y - 1000, attackX, 0);
     const graphics = this.add.graphics({
       lineStyle: { width: 2, color: 0x000fffa },
     });
@@ -462,10 +378,7 @@ class Game extends Phaser.Scene {
         this.lightningBolt.alpha = 1;
         // this.lightningBolt.x = this.player.spine.x + 400;
         this.lightningBolt.x = attackX;
-        this.lightningBolt.y = this.cameras.main.getWorldPoint(
-          0,
-          this.lightningBolt.height / 2
-        ).y;
+        this.lightningBolt.y = this.cameras.main.getWorldPoint(0, this.lightningBolt.height / 2).y;
         this.thunderSound.setDetune(Phaser.Math.Between(-500, 1000));
         this.thunderSound.play();
 
@@ -479,58 +392,62 @@ class Game extends Phaser.Scene {
   }
 
   moveBirdToBall = () => {
-    this.boulder.setPosition(this.boulder.x, this.boulder.y + 10);
-    this.boulder.setCollidesWith([8, 16, 1]);
-    this.vulture.setCollidesWith([4, 10, 1]);
-
-    if (this.constraint) {
-      this.matter.world.removeConstraint(this.constraint);
-    }
+    this.boulder.setCollidesWith([COLLISION_CATEGORIES.LeftArm, COLLISION_CATEGORIES.Vulture, COLLISION_CATEGORIES.Ground]);
+    this.vulture.setCollidesWith([COLLISION_CATEGORIES.Boulder]);
+    const initVulturePos = { x: 300, y: -1000 };
 
     const ballX = this.boulder.x;
-    const ballY = this.boulder.y - 200;
-    this.tweens.add({
-      targets: this.vulture,
-      x: ballX,
-      y: ballY,
-      duration: Phaser.Math.Between(2000, 4000), // Время перемещения (2 секунды)
-      onUpdate: () => {
-        if (!this.vulture.canAttack) {
-        }
-      },
-      onComplete: () => {
-        this.time.delayedCall(
-          Phaser.Math.Between(10000, 20000),
-          this.moveBirdToBall
-        );
-        // После завершения перемещения, можно добавить проверку коллизии, например:
-        // if (this.matter.overlap(this.bird, this.ball)) {
-        //   console.log('Коллизия!');
-        // }
-      },
-    });
-    // if (this.vulture.canAttack) {
-    //   // Получаем координаты шара
-    //   const ballX = this.boulder.x;
-    //   const ballY = this.boulder.y;
+    const ballY = this.boulder.y - 30;
 
-    //   // Перемещаем птицу к координатам шара
-    //   this.tweens.add({
-    //     targets: this.vulture,
-    //     x: ballX,
-    //     y: ballY,
-    //     duration: 2000, // Время перемещения (2 секунды)
-    //     onUpdate: () => {
-    //       console.log(this.vulture.canAttack);
-    //     },
-    //     onComplete: () => {
-    //       // После завершения перемещения, можно добавить проверку коллизии, например:
-    //       // if (this.matter.overlap(this.bird, this.ball)) {
-    //       //   console.log('Коллизия!');
-    //       // }
-    //     },
-    //   });
-    // }
+    this.tweens.chain({
+      targets: this.vulture,
+      tweens: [
+        {
+          x: ballX,
+          y: ballY,
+          duration: 2000,
+          onComplete: () => {
+            this.vulture.setCollidesWith([COLLISION_CATEGORIES.Boulder, COLLISION_CATEGORIES.Vases]);
+          },
+        },
+        {
+          x: initVulturePos.x,
+          y: initVulturePos.y,
+          duration: 3000,
+        },
+        {
+          onComplete: () => {
+            this.vulture.setVelocity(0);
+            this.matter.world.removeConstraint(this.constraint);
+            this.time.delayedCall(Phaser.Math.Between(1000, 3000), this.moveBirdToBall);
+          },
+        },
+      ],
+    });
+
+    // this.tweens.add({
+    //   targets: this.vulture,
+    //   x: ballX,
+    //   y: ballY,
+    //   // duration: Phaser.Math.Between(2000, 3000),
+    //   duration: 2000,
+    //   onComplete: () => {
+    //     this.tweens.add({
+    //       targets: this.vulture,
+    //       x: initVulturePos.x,
+    //       y: initVulturePos.y,
+    //       duration: 3000,
+    //       onComplete: () => {
+    //         if (this.constraint) {
+    //           this.matter.world.removeConstraint(this.constraint);
+    //           // this.vulture.setPosition(initVulturePos.x, initVulturePos.y);
+    //         }
+    //         // this.time.delayedCall(Phaser.Math.Between(5000, 15000), this.moveBirdToBall);
+    //         // this.time.delayedCall(Phaser.Math.Between(1000, 3000), this.moveBirdToBall);
+    //       },
+    //     });
+    //   },
+    // });
   };
 
   generateVases = (numVases: number = 30): Phaser.Physics.Matter.Image[] => {
@@ -553,8 +470,8 @@ class Game extends Phaser.Scene {
         ignorePointer: true,
       });
       vase.setScale(0.4);
-      vase.setCollisionCategory(32);
-      vase.setCollidesWith([1, 16]);
+      vase.setCollisionCategory(COLLISION_CATEGORIES.Vases);
+      vase.setCollidesWith([COLLISION_CATEGORIES.Ground, COLLISION_CATEGORIES.Vulture]);
       vase.setDepth(101);
 
       // vase.setInteractive();
@@ -623,10 +540,7 @@ class Game extends Phaser.Scene {
     let slopeStart = new Phaser.Math.Vector2(0, mountainStart.y);
 
     // set a random slope length
-    let slopeLength = Phaser.Math.Between(
-      gameOptions.slopeLength[0],
-      gameOptions.slopeLength[1]
-    );
+    let slopeLength = Phaser.Math.Between(gameOptions.slopeLength[0], gameOptions.slopeLength[1]);
 
     // determine slope end point, with an exception if this is the first slope of the fist mountain: we want it to be flat
     let slopeEnd =
@@ -642,11 +556,7 @@ class Game extends Phaser.Scene {
     // while we have less slopes than regular slopes amount per mountain...
     while (slopes < gameOptions.slopesPerMountain) {
       // slope interpolation value
-      let interpolationVal = this.interpolate(
-        slopeStart.y,
-        slopeEnd.y,
-        (pointX - slopeStart.x) / (slopeEnd.x - slopeStart.x)
-      );
+      let interpolationVal = this.interpolate(slopeStart.y, slopeEnd.y, (pointX - slopeStart.x) / (slopeEnd.x - slopeStart.x));
       // console.log("interpolationVal: ", interpolationVal);
 
       // if current point is at the end of the slope...
@@ -658,11 +568,7 @@ class Game extends Phaser.Scene {
         slopeStart = new Phaser.Math.Vector2(pointX, slopeEnd.y);
         // next slope end position
         slopeEnd = new Phaser.Math.Vector2(
-          slopeEnd.x +
-            Phaser.Math.Between(
-              gameOptions.slopeLength[0],
-              gameOptions.slopeLength[1]
-            ),
+          slopeEnd.x + Phaser.Math.Between(gameOptions.slopeLength[0], gameOptions.slopeLength[1]),
           slopeEnd.y - deltaY
         );
         // console.log("slopeStart: ", slopeStart);
@@ -673,9 +579,7 @@ class Game extends Phaser.Scene {
       }
 
       // current vertical point
-      let pointY =
-        game.config.height * gameOptions.startTerrainHeight +
-        interpolationVal * gameOptions.amplitude;
+      let pointY = game.config.height * gameOptions.startTerrainHeight + interpolationVal * gameOptions.amplitude;
 
       // add new point to slopePoints array
       slopePoints.push(new Phaser.Math.Vector2(pointX, pointY));
@@ -716,12 +620,7 @@ class Game extends Phaser.Scene {
     // loop through all simpleSlope points starting from the second
     for (let i = 1; i < simpleSlope.length; i++) {
       // define a line between previous and current simpleSlope points
-      let line = new Phaser.Geom.Line(
-        simpleSlope[i - 1].x,
-        simpleSlope[i - 1].y,
-        simpleSlope[i].x,
-        simpleSlope[i].y
-      );
+      let line = new Phaser.Geom.Line(simpleSlope[i - 1].x, simpleSlope[i - 1].y, simpleSlope[i].x, simpleSlope[i].y);
 
       // calculate line length, which is the distance between the two points
       let distance = Phaser.Geom.Line.Length(line);
@@ -735,18 +634,12 @@ class Game extends Phaser.Scene {
       // if the pool is empty...
       if (this.bodyPool.length == 0) {
         // create a new rectangle body
-        this.matter.add.rectangle(
-          center.x + mountainStart.x,
-          center.y,
-          distance,
-          10,
-          {
-            isStatic: true,
-            angle: angle,
-            friction: 1,
-            restitution: 0,
-          }
-        );
+        this.matter.add.rectangle(center.x + mountainStart.x, center.y, distance, 10, {
+          isStatic: true,
+          angle: angle,
+          friction: 1,
+          restitution: 0,
+        });
       }
 
       // if the pool is not empty...
@@ -793,15 +686,15 @@ const config: Phaser.Types.Core.GameConfig = {
     matter: {
       // debug: true,
       setBounds: {
-        left: true,
+        left: false,
         right: false,
         top: false,
         bottom: true,
       },
     },
   },
-  scene: [Intro, Menu, Preloader, Game],
-  // scene: [Preloader, Game],
+  // scene: [Intro, Menu, Preloader, Game],
+  scene: [Preloader, Game],
   plugins: {
     scene: [
       { key: "SpinePlugin", plugin: window.SpinePlugin, mapping: "spine" },
