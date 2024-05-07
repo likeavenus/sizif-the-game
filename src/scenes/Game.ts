@@ -193,11 +193,12 @@ class Game extends Phaser.Scene {
           });
 
           this.vulture.setCollidesWith([COLLISION_CATEGORIES.Vases]);
-          this.boulder.setCollidesWith([COLLISION_CATEGORIES.LeftArm, COLLISION_CATEGORIES.Ground]);
+          // this.boulder.setCollidesWith([]);
 
           this.vulture.withBoulder = true;
         }
 
+        // drop boulder
         if (
           (bodyA === this.vulture.body && bodyB?.gameObject?.body?.label === "vase") ||
           (bodyA?.gameObject?.body?.label === "vase" && bodyB === this.vulture.body)
@@ -206,6 +207,7 @@ class Game extends Phaser.Scene {
           this.vulture.canAttack = false;
           // TODO: Destroy vases
           // bodyB.gameObject.destroy(true);
+          this.boulder.setCollidesWith([COLLISION_CATEGORIES.Ground, COLLISION_CATEGORIES.LeftArm, COLLISION_CATEGORIES.Vulture]);
 
           if (this.constraint) {
             this.matter.world.removeConstraint(this.constraint);
@@ -363,6 +365,8 @@ class Game extends Phaser.Scene {
       lineStyle: { width: 2, color: 0x000fffa },
     });
 
+    graphics.setDepth(120);
+
     this.tweens.add({
       targets: line,
       y2: attackY,
@@ -396,30 +400,40 @@ class Game extends Phaser.Scene {
     this.vulture.setCollidesWith([COLLISION_CATEGORIES.Boulder]);
     const initVulturePos = { x: 300, y: -1000 };
 
-    const ballX = this.boulder.x;
-    const ballY = this.boulder.y - 30;
+    let ballX = this.boulder.x;
+    let ballY = this.boulder.y - 30;
 
-    this.tweens.chain({
+    const chain = this.tweens.chain({
       targets: this.vulture,
       tweens: [
         {
           x: ballX,
           y: ballY,
-          duration: 2000,
+          duration: 5000,
+          onUpdate: () => {
+            if (this.boulder.y > 2000) {
+              this.boulder.setVelocity(0);
+              this.boulder.setPosition(600, -500);
+              this.vulture.setPosition(initVulturePos.x, initVulturePos.y);
+            }
+          },
           onComplete: () => {
-            this.vulture.setCollidesWith([COLLISION_CATEGORIES.Boulder, COLLISION_CATEGORIES.Vases]);
+            // this.vulture.setCollidesWith([COLLISION_CATEGORIES.Boulder, COLLISION_CATEGORIES.Vases]);
           },
         },
         {
           x: initVulturePos.x,
           y: initVulturePos.y,
-          duration: 3000,
+          duration: 5000,
         },
         {
           onComplete: () => {
             this.vulture.setVelocity(0);
-            this.matter.world.removeConstraint(this.constraint);
-            this.time.delayedCall(Phaser.Math.Between(1000, 3000), this.moveBirdToBall);
+            if (this.constraint) {
+              this.matter.world.removeConstraint(this.constraint);
+            }
+            console.log("delayedCall");
+            this.time.delayedCall(Phaser.Math.Between(11000, 33000), this.moveBirdToBall);
           },
         },
       ],
@@ -677,6 +691,8 @@ const config: Phaser.Types.Core.GameConfig = {
   },
   width: window.innerWidth,
   height: window.innerHeight,
+  // width: window.innerWidth * window.devicePixelRatio,
+  // height: window.innerHeight * window.devicePixelRatio
   scale: {
     mode: Phaser.Scale.MAX_ZOOM,
     autoCenter: Phaser.Scale.CENTER_BOTH,
