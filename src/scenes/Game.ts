@@ -133,7 +133,7 @@ class Game extends Phaser.Scene {
 
     this.boulder.setCollidesWith([COLLISION_CATEGORIES.Ground, COLLISION_CATEGORIES.LeftArm, COLLISION_CATEGORIES.Vulture]);
     this.player.rightArmHitBox.setCollidesWith([COLLISION_CATEGORIES.Disabled]);
-    this.player.leftArmHitBox.setCollidesWith([COLLISION_CATEGORIES.Boulder]);
+    this.player.leftArmHitBox.setCollidesWith([COLLISION_CATEGORIES.Boulder, COLLISION_CATEGORIES.Ground]);
     this.vulture.setCollidesWith([COLLISION_CATEGORIES.Boulder, COLLISION_CATEGORIES.Vases]);
 
     const { width, height } = this.scale;
@@ -310,7 +310,7 @@ class Game extends Phaser.Scene {
     // this.matter.applyForce(this.player.spine.body, { x: -10, y: -10 });
 
     this.time.delayedCall(2000, () => {
-      this.player.leftArmHitBox.setCollidesWith([COLLISION_CATEGORIES.Boulder]);
+      this.player.leftArmHitBox.setCollidesWith([COLLISION_CATEGORIES.Boulder, COLLISION_CATEGORIES.Ground]);
     });
   }
 
@@ -700,7 +700,7 @@ const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: "matter",
     matter: {
-      // debug: true,
+      debug: true,
       setBounds: {
         left: false,
         right: false,

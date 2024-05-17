@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { COLLISION_CATEGORIES } from "../scenes/constants";
 
 declare global {
   interface ISpineContainer extends Phaser.GameObjects.Container {
@@ -38,7 +39,9 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     super(scene, x, y);
 
     // this.sgo = scene.add.spine(1500, 500, key, anim, loop).refresh();
-    this.sgo = scene.add.spine(300, 0, key, anim, loop).refresh();
+    // this.sgo = scene.add.spine(300, 0, key, anim, loop).refresh();
+    this.sgo = scene.add.spine(300, 500, key, anim, loop).refresh();
+
     this.sgo.setMix("idle", "jump", 0.1);
     this.sgo.setMix("idle", "step_right", 0.1);
     this.sgo.setMix("idle", "step_left", 0.1);
@@ -136,10 +139,9 @@ export default class SpineContainer extends Phaser.GameObjects.Container impleme
     this.body = scene.matter.add
       .gameObject(this.spine, {
         ignorePointer: true,
+        shape: "circle",
       })
       .setFixedRotation();
-
-    // this.body.setCollisionCategory(0);
 
     // this.scene.matter.world.on("collisionend", (e, bodyA, bodyB) => {});
 
